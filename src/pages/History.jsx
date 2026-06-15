@@ -7,6 +7,7 @@ import Badge from '../components/ui/Badge';
 import Button from '../components/ui/Button';
 import Card from '../components/ui/Card';
 import LoadingSpinner from '../components/ui/LoadingSpinner';
+import PageHeader from '../components/ui/PageHeader';
 import Modal, { ModalFooter } from '../components/ui/Modal';
 import { useHistory } from '../hooks/useHistory';
 import { formatPeriodLabel } from '../lib/supabase';
@@ -40,18 +41,15 @@ export default function History() {
   }
 
   return (
-    <div className="space-y-6">
-      <header className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-bold text-slate-900">Riwayat Penilaian</h1>
-          <p className="text-slate-500 mt-1">
-            History hasil perankingan WP per periode ({periods.length} periode)
-          </p>
-        </div>
+    <div className="space-y-5 sm:space-y-6">
+      <PageHeader
+        title="Riwayat Penilaian"
+        description={`History hasil perankingan WP per periode (${periods.length} periode)`}
+      >
         <Button variant="secondary" size="sm" onClick={fetchHistory}>
           Refresh
         </Button>
-      </header>
+      </PageHeader>
 
       {error && <Alert variant="error">{error}</Alert>}
 
@@ -69,8 +67,8 @@ export default function History() {
           </div>
         </Card>
       ) : (
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-          <div className="lg:col-span-4 space-y-3">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-4 sm:gap-6">
+          <div className="md:col-span-4 space-y-2 sm:space-y-3">
             <h2 className="text-sm font-semibold text-slate-700 uppercase tracking-wide">
               Daftar Periode
             </h2>
@@ -109,7 +107,7 @@ export default function History() {
             ))}
           </div>
 
-          <div className="lg:col-span-8">
+          <div className="md:col-span-8">
             {selectedData ? (
               <PeriodDetail
                 data={selectedData}

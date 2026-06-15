@@ -8,6 +8,7 @@ import Alert from '../components/ui/Alert';
 import Button from '../components/ui/Button';
 import Card from '../components/ui/Card';
 import LoadingSpinner from '../components/ui/LoadingSpinner';
+import PageHeader from '../components/ui/PageHeader';
 
 export default function AHP() {
   const {
@@ -45,17 +46,13 @@ export default function AHP() {
   }
 
   return (
-    <div className="space-y-6">
-      <header className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-bold text-slate-900">Modul AHP</h1>
-          <p className="text-slate-500 mt-1">
-            Pembobotan kriteria dengan Analytic Hierarchy Process
-          </p>
-        </div>
-
-        <div className="flex flex-wrap items-end gap-3">
-          <div>
+    <div className="space-y-5 sm:space-y-6">
+      <PageHeader
+        title="Modul AHP"
+        description="Pembobotan kriteria dengan Analytic Hierarchy Process"
+      >
+        <div className="flex flex-col sm:flex-row flex-wrap items-stretch sm:items-end gap-2 w-full sm:w-auto">
+          <div className="flex-1 sm:flex-none min-w-[140px]">
             <label htmlFor="period" className="block text-xs font-medium text-slate-600 mb-1">
               Periode Penilaian
             </label>
@@ -64,25 +61,22 @@ export default function AHP() {
               type="month"
               value={period}
               onChange={(e) => setPeriod(e.target.value)}
-              className="rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"
+              className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"
             />
           </div>
-          <Button variant="secondary" size="sm" onClick={loadData}>
+          <Button variant="secondary" size="sm" onClick={loadData} className="w-full sm:w-auto">
             Muat Ulang
           </Button>
           <Button
             onClick={handleSave}
             loading={saving}
-            disabled={
-              !ahpResult?.isConsistent ||
-              criteria.length === 0 ||
-              saving
-            }
+            disabled={!ahpResult?.isConsistent || criteria.length === 0 || saving}
+            className="w-full sm:w-auto"
           >
             Simpan Bobot
           </Button>
         </div>
-      </header>
+      </PageHeader>
 
       <div className="flex flex-wrap items-center gap-2 text-sm text-slate-600">
         <span className="inline-flex items-center rounded-full bg-brand-50 border border-brand-200 px-3 py-1">

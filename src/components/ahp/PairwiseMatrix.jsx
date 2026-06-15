@@ -30,8 +30,8 @@ export default function PairwiseMatrix({ criteria, matrix, onChange, disabled })
   }
 
   return (
-    <div className="overflow-x-auto">
-      <table className="w-full text-sm border-collapse min-w-[640px]">
+    <div className="overflow-x-auto -mx-1 px-1 scroll-smooth">
+      <table className="w-full text-sm border-collapse min-w-[520px] sm:min-w-[640px]">
         <thead>
           <tr>
             <th className="p-2 bg-slate-100 border border-slate-200 text-left font-semibold text-slate-700 sticky left-0 z-10">

@@ -35,7 +35,7 @@ export default function Modal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4">
       <button
         type="button"
         className="absolute inset-0 bg-slate-900/50 backdrop-blur-sm"
@@ -48,8 +48,9 @@ export default function Modal({
         aria-modal="true"
         aria-labelledby="modal-title"
         className={[
-          'relative w-full bg-white rounded-2xl shadow-xl border border-slate-200',
-          'max-h-[90vh] flex flex-col',
+          'relative w-full bg-white shadow-xl border border-slate-200',
+          'max-h-[92dvh] sm:max-h-[90vh] flex flex-col',
+          'rounded-t-2xl sm:rounded-2xl',
           sizes[size] ?? sizes.md,
         ].join(' ')}
       >
@@ -70,7 +71,7 @@ export default function Modal({
         <div className="px-6 py-4 overflow-y-auto flex-1">{children}</div>
 
         {footer && (
-          <div className="px-6 py-4 border-t border-slate-200 flex justify-end gap-2">
+          <div className="px-4 sm:px-6 py-4 border-t border-slate-200 flex flex-col-reverse sm:flex-row justify-end gap-2">
             {footer}
           </div>
         )}
@@ -82,10 +83,20 @@ export default function Modal({
 export function ModalFooter({ onCancel, onSubmit, submitLabel, loading, submitVariant = 'primary' }) {
   return (
     <>
-      <Button variant="secondary" onClick={onCancel} disabled={loading}>
+      <Button
+        variant="secondary"
+        onClick={onCancel}
+        disabled={loading}
+        className="w-full sm:w-auto"
+      >
         Batal
       </Button>
-      <Button variant={submitVariant} onClick={onSubmit} loading={loading}>
+      <Button
+        variant={submitVariant}
+        onClick={onSubmit}
+        loading={loading}
+        className="w-full sm:w-auto"
+      >
         {submitLabel}
       </Button>
     </>

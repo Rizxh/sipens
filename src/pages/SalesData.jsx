@@ -7,6 +7,7 @@ import Button from '../components/ui/Button';
 import Card from '../components/ui/Card';
 import Input from '../components/ui/Input';
 import LoadingSpinner from '../components/ui/LoadingSpinner';
+import PageHeader from '../components/ui/PageHeader';
 import Modal, { ModalFooter } from '../components/ui/Modal';
 import { useSales } from '../hooks/useSales';
 import { useSalesScores } from '../hooks/useSalesScores';
@@ -173,22 +174,20 @@ export default function SalesData() {
   }
 
   return (
-    <div className="space-y-6">
-      <header>
-        <h1 className="text-2xl font-bold text-slate-900">Data Sales</h1>
-        <p className="text-slate-500 mt-1">
-          Kelola data sales dan input nilai penilaian per periode
-        </p>
-      </header>
+    <div className="space-y-5 sm:space-y-6">
+      <PageHeader
+        title="Data Sales"
+        description="Kelola data sales dan input nilai penilaian per periode"
+      />
 
-      <div className="flex gap-1 p-1 bg-slate-100 rounded-xl w-fit">
+      <div className="flex gap-1 p-1 bg-slate-100 rounded-xl w-full sm:w-fit">
         {TABS.map((tab) => (
           <button
             key={tab.id}
             type="button"
             onClick={() => setActiveTab(tab.id)}
             className={[
-              'px-4 py-2 rounded-lg text-sm font-medium transition-colors',
+              'flex-1 sm:flex-none px-3 sm:px-4 py-2 rounded-lg text-sm font-medium transition-colors text-center',
               activeTab === tab.id
                 ? 'bg-white text-brand-700 shadow-sm'
                 : 'text-slate-600 hover:text-slate-900',
@@ -317,22 +316,24 @@ function SalesCrudSection({
 
   return (
     <>
-      <div className="flex flex-wrap gap-2 justify-between items-center">
+      <div className="flex flex-col sm:flex-row flex-wrap gap-2 justify-between items-stretch sm:items-center">
         <p className="text-sm text-slate-600">
           {activeCount} aktif dari {allSales.length} sales
         </p>
-        <div className="flex gap-2">
-          <Button variant="secondary" size="sm" onClick={onRefresh}>
+        <div className="flex gap-2 w-full sm:w-auto">
+          <Button variant="secondary" size="sm" onClick={onRefresh} className="flex-1 sm:flex-none">
             Refresh
           </Button>
-          <Button onClick={onAdd}>+ Tambah Sales</Button>
+          <Button onClick={onAdd} className="flex-1 sm:flex-none">
+            + Tambah Sales
+          </Button>
         </div>
       </div>
 
       {error && <Alert variant="error">{error}</Alert>}
 
       <Card padding={false} className="overflow-hidden">
-        <div className="overflow-x-auto">
+        <div className="hidden md:block overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
               <tr className="bg-slate-50 border-b border-slate-200 text-left">
@@ -385,6 +386,43 @@ function SalesCrudSection({
             </tbody>
           </table>
         </div>
+
+        <div className="md:hidden divide-y divide-slate-100">
+          {allSales.length === 0 ? (
+            <p className="px-4 py-10 text-center text-sm text-slate-500">Belum ada data sales.</p>
+          ) : (
+            allSales.map((item, index) => (
+              <div key={item.id} className="p-4 space-y-3">
+                <div className="flex items-start justify-between gap-2">
+                  <div>
+                    <p className="text-xs text-slate-400">#{index + 1}</p>
+                    <p className="font-semibold text-slate-900">{item.name}</p>
+                    <p className="text-xs font-mono text-slate-500 mt-0.5">{item.employee_id}</p>
+                  </div>
+                  <Badge variant={item.is_active ? 'benefit' : 'inactive'}>
+                    {item.is_active ? 'Aktif' : 'Nonaktif'}
+                  </Badge>
+                </div>
+                <div className="flex flex-wrap gap-1.5">
+                  <Button variant="ghost" size="sm" onClick={() => onEdit(item)}>
+                    Edit
+                  </Button>
+                  <Button variant="ghost" size="sm" onClick={() => onToggle(item)}>
+                    {item.is_active ? 'Nonaktifkan' : 'Aktifkan'}
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="!text-red-600 hover:!bg-red-50"
+                    onClick={() => onDelete(item)}
+                  >
+                    Hapus
+                  </Button>
+                </div>
+              </div>
+            ))
+          )}
+        </div>
       </Card>
     </>
   );
@@ -419,9 +457,9 @@ function ScoresSection({
 
   return (
     <>
-      <div className="flex flex-wrap items-end gap-3 justify-between">
-        <div className="flex flex-wrap items-end gap-3">
-          <div>
+      <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-end sm:justify-between">
+        <div className="flex flex-col sm:flex-row sm:flex-wrap sm:items-end gap-3 w-full sm:w-auto">
+          <div className="w-full sm:w-auto">
             <label htmlFor="score-period" className="block text-xs font-medium text-slate-600 mb-1">
               Periode Penilaian
             </label>
@@ -430,18 +468,18 @@ function ScoresSection({
               type="month"
               value={period}
               onChange={(e) => setPeriod(e.target.value)}
-              className="rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"
+              className="w-full sm:w-auto rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"
             />
           </div>
-          <span className="text-sm text-slate-600 pb-2">
-            {formatPeriodLabel(period)} · {filledCount}/{totalCells} sel terisi ({progress}%)
+          <span className="text-sm text-slate-600 sm:pb-2">
+            {formatPeriodLabel(period)} · {filledCount}/{totalCells} sel ({progress}%)
           </span>
         </div>
-        <div className="flex gap-2">
-          <Button variant="secondary" size="sm" onClick={onRefresh}>
+        <div className="flex gap-2 w-full sm:w-auto">
+          <Button variant="secondary" size="sm" onClick={onRefresh} className="flex-1 sm:flex-none">
             Muat Ulang
           </Button>
-          <Button onClick={onSave} loading={saving} disabled={totalCells === 0}>
+          <Button onClick={onSave} loading={saving} disabled={totalCells === 0} className="flex-1 sm:flex-none">
             Simpan Nilai
           </Button>
         </div>

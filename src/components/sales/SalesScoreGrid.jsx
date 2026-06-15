@@ -18,8 +18,8 @@ export default function SalesScoreGrid({
   }
 
   return (
-    <div className="overflow-x-auto">
-      <table className="w-full text-sm border-collapse min-w-[720px]">
+    <div className="overflow-x-auto -mx-1 px-1 scroll-smooth">
+      <table className="w-full text-sm border-collapse min-w-[560px] sm:min-w-[720px]">
         <thead>
           <tr className="bg-slate-50 border-b border-slate-200">
             <th className="px-3 py-3 text-left font-semibold text-slate-700 sticky left-0 bg-slate-50 z-10">

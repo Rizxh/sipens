@@ -6,6 +6,7 @@ import Badge from '../components/ui/Badge';
 import Button from '../components/ui/Button';
 import Card from '../components/ui/Card';
 import LoadingSpinner from '../components/ui/LoadingSpinner';
+import PageHeader from '../components/ui/PageHeader';
 import { useWPResult } from '../hooks/useWPResult';
 import { formatPeriodLabel } from '../lib/supabase';
 import { formatVPercent } from '../utils/wp';
@@ -43,17 +44,13 @@ export default function WPResult() {
   }
 
   return (
-    <div className="space-y-6">
-      <header className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-bold text-slate-900">Hasil WP</h1>
-          <p className="text-slate-500 mt-1">
-            Perankingan sales dengan metode Weighted Product
-          </p>
-        </div>
-
-        <div className="flex flex-wrap items-end gap-3">
-          <div>
+    <div className="space-y-5 sm:space-y-6">
+      <PageHeader
+        title="Hasil WP"
+        description="Perankingan sales dengan metode Weighted Product"
+      >
+        <div className="flex flex-col sm:flex-row flex-wrap items-stretch sm:items-end gap-2 w-full sm:w-auto">
+          <div className="flex-1 sm:flex-none min-w-[140px]">
             <label htmlFor="wp-period" className="block text-xs font-medium text-slate-600 mb-1">
               Periode Penilaian
             </label>
@@ -62,21 +59,22 @@ export default function WPResult() {
               type="month"
               value={period}
               onChange={(e) => setPeriod(e.target.value)}
-              className="rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"
+              className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"
             />
           </div>
-          <Button variant="secondary" size="sm" onClick={loadAndCompute}>
+          <Button variant="secondary" size="sm" onClick={loadAndCompute} className="w-full sm:w-auto">
             Hitung Ulang
           </Button>
           <Button
             onClick={handleSave}
             loading={saving}
             disabled={!wpData || saving}
+            className="w-full sm:w-auto"
           >
             Simpan Hasil
           </Button>
         </div>
-      </header>
+      </PageHeader>
 
       <div className="flex flex-wrap gap-2 text-sm">
         <StatusPill ok={prerequisites.hasWeights} label="Bobot AHP" />
@@ -120,15 +118,15 @@ export default function WPResult() {
         <>
           {wpData.bestSales && (
             <Card className="bg-gradient-to-r from-amber-50 to-orange-50 border-amber-200">
-              <div className="flex items-center gap-4">
-                <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-amber-200">
-                  <Icon name="trophyFilled" className="w-9 h-9 text-amber-800" />
+              <div className="flex flex-col sm:flex-row items-center sm:items-start gap-3 sm:gap-4 text-center sm:text-left">
+                <div className="flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-2xl bg-amber-200 shrink-0">
+                  <Icon name="trophyFilled" className="w-8 h-8 sm:w-9 sm:h-9 text-amber-800" />
                 </div>
-                <div>
+                <div className="min-w-0">
                   <p className="text-xs font-semibold uppercase tracking-wide text-amber-700">
                     Sales Terbaik — {formatPeriodLabel(period)}
                   </p>
-                  <h2 className="text-2xl font-bold text-slate-900 mt-0.5">
+                  <h2 className="text-xl sm:text-2xl font-bold text-slate-900 mt-0.5 truncate">
                     {wpData.bestSales.name}
                   </h2>
                   <p className="text-sm text-slate-600">
@@ -142,7 +140,7 @@ export default function WPResult() {
             </Card>
           )}
 
-          <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
             <Card>
               <h2 className="text-lg font-semibold text-slate-900 mb-4">
                 Grafik Nilai V
@@ -198,8 +196,8 @@ export default function WPResult() {
                   <tr className="bg-slate-50 border-b border-slate-200 text-left">
                     <th className="px-4 py-3 font-semibold text-slate-700">Rank</th>
                     <th className="px-4 py-3 font-semibold text-slate-700">Nama Sales</th>
-                    <th className="px-4 py-3 font-semibold text-slate-700">ID Karyawan</th>
-                    <th className="px-4 py-3 font-semibold text-slate-700 text-right">
+                    <th className="px-3 sm:px-4 py-3 font-semibold text-slate-700 hidden sm:table-cell">ID Karyawan</th>
+                    <th className="px-3 sm:px-4 py-3 font-semibold text-slate-700 text-right hidden md:table-cell">
                       Nilai S
                     </th>
                     <th className="px-4 py-3 font-semibold text-slate-700 text-right">
@@ -233,13 +231,14 @@ export default function WPResult() {
                           {row.rank}
                         </span>
                       </td>
-                      <td className="px-4 py-3 font-medium text-slate-900">
-                        {row.name}
+                      <td className="px-3 sm:px-4 py-3 font-medium text-slate-900">
+                        <span className="block">{row.name}</span>
+                        <span className="sm:hidden text-xs font-mono text-slate-500">{row.employeeId}</span>
                       </td>
-                      <td className="px-4 py-3 font-mono text-slate-600">
+                      <td className="px-3 sm:px-4 py-3 font-mono text-slate-600 hidden sm:table-cell">
                         {row.employeeId}
                       </td>
-                      <td className="px-4 py-3 text-right font-mono text-slate-700">
+                      <td className="px-3 sm:px-4 py-3 text-right font-mono text-slate-700 hidden md:table-cell">
                         {row.sValue.toFixed(6)}
                       </td>
                       <td className="px-4 py-3 text-right font-semibold text-brand-700">

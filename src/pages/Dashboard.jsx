@@ -7,6 +7,7 @@ import Alert from '../components/ui/Alert';
 import Button from '../components/ui/Button';
 import Card from '../components/ui/Card';
 import LoadingSpinner from '../components/ui/LoadingSpinner';
+import PageHeader from '../components/ui/PageHeader';
 
 const quickActions = [
   {
@@ -56,18 +57,15 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="space-y-8">
-      <header className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-bold text-slate-900">Dashboard</h1>
-          <p className="text-slate-500 mt-1">
-            Selamat datang, {profile?.full_name || profile?.email}
-          </p>
-        </div>
+    <div className="space-y-6 sm:space-y-8">
+      <PageHeader
+        title="Dashboard"
+        description={`Selamat datang, ${profile?.full_name || profile?.email}`}
+      >
         <Button variant="secondary" size="sm" onClick={refetch}>
           Refresh
         </Button>
-      </header>
+      </PageHeader>
 
       {error && (
         <Alert variant="error">
@@ -82,7 +80,7 @@ export default function Dashboard() {
         </Alert>
       )}
 
-      <section className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+      <section className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-4">
         <StatCard
           label="Total Sales Aktif"
           value={stats.salesCount}
@@ -111,9 +109,9 @@ export default function Dashboard() {
         />
       </section>
 
-      <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
-        <Card className="xl:col-span-2">
-          <div className="flex items-center justify-between mb-5">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
+        <Card className="lg:col-span-2">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-4 sm:mb-5">
             <div>
               <h2 className="text-lg font-semibold text-slate-900">
                 Top 3 Sales Terbaik
@@ -142,7 +140,7 @@ export default function Dashboard() {
                 <div
                   key={`${sales.salesId}-${sales.rank}`}
                   className={[
-                    'flex items-center gap-4 rounded-xl border p-4 transition-colors',
+                    'flex items-center gap-3 sm:gap-4 rounded-xl border p-3 sm:p-4 transition-colors',
                     sales.rank === 1
                       ? 'bg-amber-50/60 border-amber-200'
                       : 'bg-slate-50 border-slate-200',
@@ -219,7 +217,7 @@ export default function Dashboard() {
         <h2 className="text-lg font-semibold text-slate-900 mb-3">
           Alur Penilaian
         </h2>
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
           {[
             { step: 1, label: 'Kriteria', desc: 'Pastikan kriteria aktif' },
             { step: 2, label: 'AHP', desc: 'Hitung bobot (CR ≤ 0.1)' },
@@ -263,7 +261,7 @@ function StatCard({ label, value, icon, accent = 'brand', subtext }) {
   };
 
   return (
-    <div className={`rounded-xl border p-5 ${accents[accent] ?? accents.brand}`}>
+    <div className={`rounded-xl border p-4 sm:p-5 ${accents[accent] ?? accents.brand}`}>
       <div className="flex items-start justify-between gap-2">
         <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
           {label}
@@ -274,7 +272,7 @@ function StatCard({ label, value, icon, accent = 'brand', subtext }) {
         />
       </div>
       <p
-        className={`text-2xl font-bold mt-2 ${valueColors[accent] ?? valueColors.brand}`}
+        className={`text-xl sm:text-2xl font-bold mt-2 ${valueColors[accent] ?? valueColors.brand}`}
       >
         {value}
       </p>

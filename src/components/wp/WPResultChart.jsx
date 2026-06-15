@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import {
   Bar,
   BarChart,
@@ -10,7 +11,6 @@ import {
 } from 'recharts';
 import { Icon } from '../icons';
 
-/** Warna unik per bar — golden angle agar hue terdistribusi merata */
 function getBarColor(index, total) {
   if (total <= 1) return '#3b82f6';
   const hue = Math.round((index * 137.508) % 360);
@@ -20,42 +20,70 @@ function getBarColor(index, total) {
 }
 
 export default function WPResultChart({ results }) {
-  if (!results?.length) return null;
+  const chartData = useMemo(
+    () =>
+      (results ?? []).map((r) => ({
+        name: r.name?.split(' ')[0] ?? r.employeeId,
+        fullName: r.name,
+        vPercent: Number((r.vValue * 100).toFixed(2)),
+        rank: r.rank,
+        isBest: r.isBest,
+      })),
+    [results]
+  );
 
-  const chartData = results.map((r) => ({
-    name: r.name?.split(' ')[0] ?? r.employeeId,
-    fullName: r.name,
-    vPercent: Number((r.vValue * 100).toFixed(2)),
-    rank: r.rank,
-    isBest: r.isBest,
-  }));
+  if (!chartData.length) return null;
+
+  const count = chartData.length;
+  const crowded = count > 6;
+  const veryCrowded = count > 12;
+  const xAngle = veryCrowded ? -65 : crowded ? -45 : count > 3 ? -30 : 0;
+  const bottomMargin = veryCrowded ? 72 : crowded ? 56 : count > 3 ? 40 : 8;
+  const tickSize = veryCrowded ? 9 : crowded ? 10 : 11;
 
   return (
-    <div className="w-full h-[320px]">
+    <div
+      className={[
+        'w-full',
+        veryCrowded ? 'h-[300px] sm:h-[340px]' : crowded ? 'h-[260px] sm:h-[300px]' : 'h-[220px] sm:h-[260px]',
+      ].join(' ')}
+    >
       <ResponsiveContainer width="100%" height="100%">
-        <BarChart data={chartData} margin={{ top: 8, right: 8, left: 0, bottom: 8 }}>
-          <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+        <BarChart
+          data={chartData}
+          margin={{ top: 8, right: 4, left: -8, bottom: bottomMargin }}
+        >
+          <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" vertical={false} />
           <XAxis
             dataKey="name"
-            tick={{ fontSize: 12, fill: '#64748b' }}
+            tick={{ fontSize: tickSize, fill: '#64748b' }}
             axisLine={{ stroke: '#cbd5e1' }}
+            interval={0}
+            angle={xAngle}
+            textAnchor={xAngle ? 'end' : 'middle'}
+            height={bottomMargin}
           />
           <YAxis
-            tick={{ fontSize: 12, fill: '#64748b' }}
+            tick={{ fontSize: 11, fill: '#64748b' }}
             axisLine={{ stroke: '#cbd5e1' }}
-            label={{
-              value: 'Nilai V (%)',
-              angle: -90,
-              position: 'insideLeft',
-              style: { fontSize: 12, fill: '#64748b' },
-            }}
+            width={42}
+            label={
+              count <= 8
+                ? {
+                    value: 'V (%)',
+                    angle: -90,
+                    position: 'insideLeft',
+                    style: { fontSize: 11, fill: '#64748b' },
+                  }
+                : undefined
+            }
           />
           <Tooltip
             content={({ active, payload }) => {
               if (!active || !payload?.length) return null;
               const d = payload[0].payload;
               return (
-                <div className="bg-white border border-slate-200 rounded-lg shadow-lg px-3 py-2 text-sm">
+                <div className="bg-white border border-slate-200 rounded-lg shadow-lg px-3 py-2 text-sm max-w-[200px]">
                   <p className="font-semibold text-slate-900">{d.fullName}</p>
                   <p className="text-brand-700">V: {d.vPercent}%</p>
                   <p className="text-slate-500">Rank #{d.rank}</p>
@@ -69,7 +97,7 @@ export default function WPResultChart({ results }) {
               );
             }}
           />
-          <Bar dataKey="vPercent" radius={[6, 6, 0, 0]} maxBarSize={48}>
+          <Bar dataKey="vPercent" radius={[4, 4, 0, 0]} maxBarSize={crowded ? 28 : 40}>
             {chartData.map((entry, index) => (
               <Cell
                 key={`cell-${entry.fullName}-${index}`}
