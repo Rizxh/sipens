@@ -1,8 +1,8 @@
 import { Link } from 'react-router-dom';
 import WPResultChart from '../components/wp/WPResultChart';
+import WPRankingTable from '../components/wp/WPRankingTable';
 import { Icon } from '../components/icons';
 import Alert from '../components/ui/Alert';
-import Badge from '../components/ui/Badge';
 import Button from '../components/ui/Button';
 import Card from '../components/ui/Card';
 import LoadingSpinner from '../components/ui/LoadingSpinner';
@@ -76,10 +76,10 @@ export default function WPResult() {
         </div>
       </PageHeader>
 
-      <div className="flex flex-wrap gap-2 text-sm">
-        <StatusPill ok={prerequisites.hasWeights} label="Bobot AHP" />
-        <StatusPill ok={prerequisites.weightsConsistent} label="CR ≤ 0.1" />
-        <StatusPill ok={prerequisites.hasScores} label="Nilai sales lengkap" />
+      <div className="flex flex-wrap gap-2 text-xs sm:text-sm">
+        <StatusPill ok={prerequisites.hasWeights} label="Bobot AHP" shortLabel="AHP" />
+        <StatusPill ok={prerequisites.weightsConsistent} label="CR ≤ 0.1" shortLabel="CR" />
+        <StatusPill ok={prerequisites.hasScores} label="Nilai sales lengkap" shortLabel="Nilai" />
         {hasSavedResults && (
           <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 border border-emerald-200 px-3 py-1 text-emerald-700">
             <Icon name="checkSimple" className="w-4 h-4" />
@@ -140,16 +140,16 @@ export default function WPResult() {
             </Card>
           )}
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
+          <div className="space-y-4 sm:space-y-6">
             <Card>
-              <h2 className="text-lg font-semibold text-slate-900 mb-4">
+              <h2 className="text-base sm:text-lg font-semibold text-slate-900 mb-4">
                 Grafik Nilai V
               </h2>
               <WPResultChart results={wpData.results} />
             </Card>
 
             <Card>
-              <h2 className="text-lg font-semibold text-slate-900 mb-4">
+              <h2 className="text-base sm:text-lg font-semibold text-slate-900 mb-4">
                 Ringkasan Perhitungan
               </h2>
               <dl className="space-y-3 text-sm">
@@ -184,106 +184,31 @@ export default function WPResult() {
             </Card>
           </div>
 
-          <Card padding={false} className="overflow-hidden">
-            <div className="px-5 py-4 border-b border-slate-200">
-              <h2 className="text-lg font-semibold text-slate-900">
-                Tabel Ranking
-              </h2>
-            </div>
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="bg-slate-50 border-b border-slate-200 text-left">
-                    <th className="px-4 py-3 font-semibold text-slate-700">Rank</th>
-                    <th className="px-4 py-3 font-semibold text-slate-700">Nama Sales</th>
-                    <th className="px-3 sm:px-4 py-3 font-semibold text-slate-700 hidden sm:table-cell">ID Karyawan</th>
-                    <th className="px-3 sm:px-4 py-3 font-semibold text-slate-700 text-right hidden md:table-cell">
-                      Nilai S
-                    </th>
-                    <th className="px-4 py-3 font-semibold text-slate-700 text-right">
-                      Nilai V
-                    </th>
-                    <th className="px-4 py-3 font-semibold text-slate-700">Status</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {wpData.results.map((row) => (
-                    <tr
-                      key={row.id}
-                      className={[
-                        'border-b border-slate-100',
-                        row.isBest ? 'bg-amber-50/60' : 'hover:bg-slate-50/80',
-                      ].join(' ')}
-                    >
-                      <td className="px-4 py-3">
-                        <span
-                          className={[
-                            'inline-flex h-8 w-8 items-center justify-center rounded-full font-bold text-sm',
-                            row.rank === 1
-                              ? 'bg-amber-200 text-amber-900'
-                              : row.rank === 2
-                                ? 'bg-slate-200 text-slate-700'
-                                : row.rank === 3
-                                  ? 'bg-orange-100 text-orange-800'
-                                  : 'bg-slate-100 text-slate-600',
-                          ].join(' ')}
-                        >
-                          {row.rank}
-                        </span>
-                      </td>
-                      <td className="px-3 sm:px-4 py-3 font-medium text-slate-900">
-                        <span className="block">{row.name}</span>
-                        <span className="sm:hidden text-xs font-mono text-slate-500">{row.employeeId}</span>
-                      </td>
-                      <td className="px-3 sm:px-4 py-3 font-mono text-slate-600 hidden sm:table-cell">
-                        {row.employeeId}
-                      </td>
-                      <td className="px-3 sm:px-4 py-3 text-right font-mono text-slate-700 hidden md:table-cell">
-                        {row.sValue.toFixed(6)}
-                      </td>
-                      <td className="px-4 py-3 text-right font-semibold text-brand-700">
-                        {formatVPercent(row.vValue)}
-                      </td>
-                      <td className="px-4 py-3">
-                        {row.isBest ? (
-                          <Badge variant="benefit">
-                            <span className="inline-flex items-center gap-1">
-                              <Icon name="star" className="w-3 h-3" />
-                              Sales Terbaik
-                            </span>
-                          </Badge>
-                        ) : (
-                          <span className="text-slate-400">—</span>
-                        )}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </Card>
+          <WPRankingTable results={wpData.results} />
         </>
       )}
     </div>
   );
 }
 
-function StatusPill({ ok, label }) {
+function StatusPill({ ok, label, shortLabel }) {
   return (
     <span
       className={[
-        'inline-flex items-center gap-1.5 rounded-full border px-3 py-1',
+        'inline-flex items-center gap-1.5 rounded-full border px-2.5 sm:px-3 py-1',
         ok
           ? 'bg-emerald-50 border-emerald-200 text-emerald-700'
           : 'bg-slate-100 border-slate-200 text-slate-500',
       ].join(' ')}
+      title={label}
     >
       {ok ? (
-        <Icon name="checkSimple" className="w-4 h-4" />
+        <Icon name="checkSimple" className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
       ) : (
-        <Icon name="circle" className="w-3 h-3" />
+        <Icon name="circle" className="w-3 h-3 shrink-0" />
       )}
-      {label}
+      <span className="sm:hidden">{shortLabel ?? label}</span>
+      <span className="hidden sm:inline">{label}</span>
     </span>
   );
 }

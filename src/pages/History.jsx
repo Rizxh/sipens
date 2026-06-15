@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import WPResultChart from '../components/wp/WPResultChart';
+import WPRankingTable from '../components/wp/WPRankingTable';
 import { Icon } from '../components/icons';
 import Alert from '../components/ui/Alert';
 import Badge from '../components/ui/Badge';
@@ -179,8 +180,8 @@ function PeriodDetail({ data, ahpMeta, detailLoading, onDelete }) {
   return (
     <div className="space-y-4">
       <Card className="bg-gradient-to-r from-brand-50 to-slate-50 border-brand-100">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          <div>
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
+          <div className="min-w-0 flex-1">
             <p className="text-xs font-semibold uppercase tracking-wide text-brand-600">
               Detail Periode
             </p>
@@ -189,7 +190,7 @@ function PeriodDetail({ data, ahpMeta, detailLoading, onDelete }) {
               {data.participantCount} sales dinilai · disimpan {formatDateTime(data.savedAt)}
             </p>
           </div>
-          <Button variant="danger" size="sm" onClick={onDelete}>
+          <Button variant="danger" size="sm" onClick={onDelete} className="w-full sm:w-auto shrink-0">
             Hapus Riwayat
           </Button>
         </div>
@@ -232,49 +233,10 @@ function PeriodDetail({ data, ahpMeta, detailLoading, onDelete }) {
         <WPResultChart results={chartResults} />
       </Card>
 
-      <Card padding={false} className="overflow-hidden">
-        <div className="px-5 py-4 border-b border-slate-200">
-          <h3 className="text-base font-semibold text-slate-900">Ranking Lengkap</h3>
-        </div>
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="bg-slate-50 border-b border-slate-200 text-left">
-                <th className="px-4 py-3 font-semibold text-slate-700">Rank</th>
-                <th className="px-4 py-3 font-semibold text-slate-700">Nama</th>
-                <th className="px-4 py-3 font-semibold text-slate-700">ID</th>
-                <th className="px-4 py-3 font-semibold text-slate-700 text-right">S</th>
-                <th className="px-4 py-3 font-semibold text-slate-700 text-right">V</th>
-              </tr>
-            </thead>
-            <tbody>
-              {data.results.map((row) => (
-                <tr
-                  key={row.salesId}
-                  className={row.isBest ? 'bg-amber-50/60 border-b border-slate-100' : 'border-b border-slate-100'}
-                >
-                  <td className="px-4 py-3 font-bold text-slate-700">#{row.rank}</td>
-                  <td className="px-4 py-3 font-medium text-slate-900">
-                    {row.name}
-                    {row.isBest && (
-                      <span className="ml-2">
-                        <Badge variant="benefit">Terbaik</Badge>
-                      </span>
-                    )}
-                  </td>
-                  <td className="px-4 py-3 font-mono text-slate-600">{row.employeeId}</td>
-                  <td className="px-4 py-3 text-right font-mono text-slate-700">
-                    {row.sValue.toFixed(6)}
-                  </td>
-                  <td className="px-4 py-3 text-right font-semibold text-brand-700">
-                    {formatVPercent(row.vValue)}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </Card>
+      <WPRankingTable
+        results={chartResults}
+        title="Ranking Lengkap"
+      />
     </div>
   );
 }

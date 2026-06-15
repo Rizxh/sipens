@@ -66,7 +66,7 @@ export default function Sidebar() {
   }
 
   return (
-    <aside className="hidden md:flex md:w-[4.5rem] lg:w-64 md:flex-col md:fixed md:inset-y-0 bg-brand-900 text-white z-30">
+    <aside className="hidden md:flex md:w-18 lg:w-64 md:flex-col md:fixed md:inset-y-0 bg-brand-900 text-white z-30">
       <div className="px-3 lg:px-6 py-4 lg:py-5 border-b border-brand-800">
         <div className="flex items-center justify-center lg:justify-start gap-2">
           <Icon name="logo" className="w-6 h-6 text-brand-200 shrink-0" />
@@ -188,10 +188,10 @@ function BottomNav() {
 
   return (
     <nav
-      className="md:hidden fixed bottom-0 inset-x-0 z-30 bg-white border-t border-slate-200 shadow-[0_-4px_20px_rgba(15,23,42,0.06)]"
-      style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}
+      className="md:hidden fixed bottom-0 inset-x-0 z-30 bg-white/95 backdrop-blur-md border-t border-slate-200 shadow-[0_-4px_20px_rgba(15,23,42,0.06)]"
+      style={{ paddingBottom: 'max(env(safe-area-inset-bottom, 0px), 4px)' }}
     >
-      <div className="grid grid-cols-6 gap-0 px-1">
+      <div className="grid grid-cols-6 gap-0 px-0.5 pt-1">
         {navItems.map((item) => {
           const isActive =
             location.pathname === item.to
@@ -204,7 +204,9 @@ function BottomNav() {
               className={navLinkClass(isActive, true)}
             >
               <Icon name={item.icon} className="w-5 h-5 shrink-0" />
-              <span className="truncate w-full text-center">{item.label}</span>
+              <span className="truncate w-full text-center px-0.5">
+                {item.shortLabel ?? item.label}
+              </span>
             </NavLink>
           );
         })}
@@ -256,9 +258,9 @@ export function AppLayout() {
       <MobileDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)} />
       <BottomNav />
 
-      <div className="md:pl-[4.5rem] lg:pl-64 pb-[4.5rem] md:pb-0 min-h-screen flex flex-col">
+      <div className="md:pl-18 lg:pl-64 pb-[4.75rem] md:pb-0 min-h-screen flex flex-col">
         <MobileHeader onMenuOpen={() => setDrawerOpen(true)} />
-        <main className="flex-1 p-4 sm:p-5 md:p-6 lg:p-8 max-w-[1600px] w-full mx-auto">
+        <main className="flex-1 p-3 sm:p-5 md:p-6 lg:p-8 max-w-[1600px] w-full mx-auto min-w-0">
           <Outlet />
         </main>
       </div>
