@@ -28,7 +28,8 @@ npm run dev
 1. **SQL Editor** → jalankan `schema.sql`
 2. **Authentication → Users** → buat user admin (centang **Auto Confirm**)
 3. Jalankan `fix-rls-recursion.sql` jika login error infinite recursion
-4. Jalankan `seed-30-sales.sql` untuk **30 sales** + data penilaian lengkap (periode 2025-06)
+4. Jalankan `seed-100-sales.sql` untuk **100 sales** + penilaian **Jan–Jun 2025** (6 periode)
+   - Atau `seed-30-sales.sql` untuk dataset lebih kecil (30 sales, 1 periode)
 
 ## Deploy ke Vercel
 
