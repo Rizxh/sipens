@@ -1,12 +1,14 @@
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL?.trim() ?? '';
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY?.trim() ?? '';
 
-if (!supabaseUrl || !supabaseAnonKey) {
+export const isSupabaseConfigured = Boolean(supabaseUrl && supabaseAnonKey);
+
+if (!isSupabaseConfigured) {
   console.warn(
     '[SIPENS] VITE_SUPABASE_URL atau VITE_SUPABASE_ANON_KEY belum diset. ' +
-      'Salin .env.example ke .env dan isi kredensial Supabase Anda.'
+      'Salin .env.example ke .env (lokal) atau set di Vercel lalu redeploy.'
   );
 }
 
@@ -14,23 +16,25 @@ if (!supabaseUrl || !supabaseAnonKey) {
  * Supabase client singleton untuk seluruh aplikasi.
  * Gunakan publishable/anon key saja — jangan expose service_role di frontend.
  */
-export const supabase = createClient(
-  supabaseUrl ?? '',
-  supabaseAnonKey ?? '',
-  {
-    auth: {
-      persistSession: true,
-      autoRefreshToken: true,
-      detectSessionInUrl: true,
-    },
-  }
-);
+export const supabase = isSupabaseConfigured
+  ? createClient(supabaseUrl, supabaseAnonKey, {
+      auth: {
+        persistSession: true,
+        autoRefreshToken: true,
+        detectSessionInUrl: true,
+      },
+    })
+  : null;
 
 /**
  * Ambil profil user yang sedang login.
  * @returns {Promise<{ data: object|null, error: object|null }>}
  */
 export async function getCurrentProfile() {
+  if (!supabase) {
+    return { data: null, error: { message: 'Supabase belum dikonfigurasi.' } };
+  }
+
   const {
     data: { user },
     error: authError,

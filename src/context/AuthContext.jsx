@@ -1,5 +1,5 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import { supabase, getCurrentProfile } from '../lib/supabase';
+import { supabase, getCurrentProfile, isSupabaseConfigured } from '../lib/supabase';
 
 const AuthContext = createContext(null);
 
@@ -60,6 +60,11 @@ export function AuthProvider({ children }) {
   }, []);
 
   useEffect(() => {
+    if (!isSupabaseConfigured || !supabase) {
+      setLoading(false);
+      return undefined;
+    }
+
     let mounted = true;
 
     async function initAuth() {
@@ -108,6 +113,8 @@ export function AuthProvider({ children }) {
   }, [fetchProfile]);
 
   const signIn = useCallback(async (email, password) => {
+    if (!supabase) throw new Error('Supabase belum dikonfigurasi.');
+
     setError(null);
 
     const { data, error: signInError } = await supabase.auth.signInWithPassword({
@@ -124,6 +131,8 @@ export function AuthProvider({ children }) {
   }, [fetchProfile]);
 
   const signUp = useCallback(async (email, password, fullName = '') => {
+    if (!supabase) throw new Error('Supabase belum dikonfigurasi.');
+
     setError(null);
 
     const { data, error: signUpError } = await supabase.auth.signUp({
@@ -152,6 +161,8 @@ export function AuthProvider({ children }) {
   }, [fetchProfile]);
 
   const signOut = useCallback(async () => {
+    if (!supabase) return;
+
     setError(null);
     const { error: signOutError } = await supabase.auth.signOut();
 
