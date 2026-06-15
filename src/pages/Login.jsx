@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { Icon } from '../components/icons';
@@ -8,17 +8,12 @@ import Input from '../components/ui/Input';
 import LoadingSpinner from '../components/ui/LoadingSpinner';
 
 const MODES = {
-  signin: {
-    title: 'Masuk',
-    subtitle: 'Masuk ke dashboard penilaian sales',
-    submit: 'Masuk',
-  },
-  signup: {
-    title: 'Daftar',
-    subtitle: 'Buat akun admin untuk SIPENS',
-    submit: 'Buat Akun',
-  },
+  signin: { submit: 'Masuk' },
+  signup: { submit: 'Buat Akun' },
 };
+
+const inputCompact =
+  '[&_label]:mb-1 [&_label]:text-xs [&_input]:py-1.5 [&_input]:text-sm';
 
 export default function Login() {
   const { signIn, signUp, loading, isAuthenticated, isAdmin } = useAuth();
@@ -37,9 +32,17 @@ export default function Login() {
   const from = location.state?.from || '/dashboard';
   const copy = MODES[mode];
 
+  useEffect(() => {
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = prev;
+    };
+  }, []);
+
   if (loading) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center gap-3 bg-white">
+      <div className="h-dvh overflow-hidden flex flex-col items-center justify-center gap-2 bg-slate-50">
         <LoadingSpinner size="lg" />
         <p className="text-sm text-slate-500">Memuat...</p>
       </div>
@@ -111,23 +114,29 @@ export default function Login() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 flex items-center justify-center px-4 py-10">
-      <div className="w-full max-w-[400px]">
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-brand-600 text-white mb-4 shadow-sm">
-            <Icon name="logo" className="w-6 h-6" />
+    <div className="h-dvh overflow-hidden bg-slate-50 flex items-center justify-center px-4">
+      <div className="w-full max-w-[360px]">
+        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm px-5 py-5 sm:px-6">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-brand-600 text-white shrink-0">
+              <Icon name="logo" className="w-5 h-5" />
+            </div>
+            <div className="min-w-0">
+              <h1 className="text-lg font-bold text-slate-900 tracking-tight leading-tight">
+                SIPENS
+              </h1>
+              <p className="text-slate-500 text-sm leading-snug truncate">
+                Penilaian & Nominasi Sales Terbaik
+              </p>
+            </div>
           </div>
-          <h1 className="text-2xl font-bold text-slate-900 tracking-tight">SIPENS</h1>
-          <p className="text-slate-500 text-base mt-1.5">Penilaian & Nominasi Sales Terbaik</p>
-        </div>
 
-        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 sm:p-8">
-          <div className="flex rounded-lg bg-slate-100 p-1 mb-6">
+          <div className="flex rounded-lg bg-slate-100 p-0.5 mb-4">
             <button
               type="button"
               onClick={() => switchMode('signin')}
               className={[
-                'flex-1 rounded-md py-2 text-sm font-medium transition-all',
+                'flex-1 rounded-md py-1.5 text-sm font-medium transition-all',
                 mode === 'signin'
                   ? 'bg-white text-slate-900 shadow-sm'
                   : 'text-slate-500 hover:text-slate-700',
@@ -139,7 +148,7 @@ export default function Login() {
               type="button"
               onClick={() => switchMode('signup')}
               className={[
-                'flex-1 rounded-md py-2 text-sm font-medium transition-all',
+                'flex-1 rounded-md py-1.5 text-sm font-medium transition-all',
                 mode === 'signup'
                   ? 'bg-white text-slate-900 shadow-sm'
                   : 'text-slate-500 hover:text-slate-700',
@@ -149,17 +158,21 @@ export default function Login() {
             </button>
           </div>
 
-          <div className="mb-5">
-            <h2 className="text-lg font-semibold text-slate-900">{copy.title}</h2>
-            <p className="text-sm text-slate-500 mt-0.5">{copy.subtitle}</p>
-          </div>
+          {formError && (
+            <Alert variant="error" className="mb-3 px-3 py-2 text-xs">
+              {formError}
+            </Alert>
+          )}
+          {formInfo && (
+            <Alert variant="info" className="mb-3 px-3 py-2 text-xs">
+              {formInfo}
+            </Alert>
+          )}
 
-          {formError && <Alert variant="error" className="mb-4">{formError}</Alert>}
-          {formInfo && <Alert variant="info" className="mb-4">{formInfo}</Alert>}
-
-          <form onSubmit={handleSubmit} className="space-y-4" noValidate>
+          <form onSubmit={handleSubmit} className="space-y-2.5" noValidate>
             {mode === 'signup' && (
               <Input
+                className={inputCompact}
                 label="Nama Lengkap"
                 name="fullName"
                 type="text"
@@ -173,6 +186,7 @@ export default function Login() {
             )}
 
             <Input
+              className={inputCompact}
               label="Email"
               name="email"
               type="email"
@@ -185,6 +199,7 @@ export default function Login() {
             />
 
             <Input
+              className={inputCompact}
               label="Password"
               name="password"
               type="password"
@@ -196,24 +211,13 @@ export default function Login() {
               disabled={submitting}
             />
 
-            <Button type="submit" className="w-full" size="lg" loading={submitting}>
+            <Button type="submit" className="w-full mt-1" size="md" loading={submitting}>
               {copy.submit}
             </Button>
           </form>
-
-          <p className="text-center text-sm text-slate-500 mt-5">
-            {copy.toggle}{' '}
-            <button
-              type="button"
-              onClick={() => switchMode(mode === 'signin' ? 'signup' : 'signin')}
-              className="text-brand-600 font-medium hover:text-brand-700 hover:underline"
-            >
-              {copy.toggleAction}
-            </button>
-          </p>
         </div>
 
-        <p className="text-center text-xs text-slate-400 mt-6">
+        <p className="text-center text-[11px] text-slate-400 mt-3">
           AHP & Weighted Product · Dashboard Internal
         </p>
       </div>
