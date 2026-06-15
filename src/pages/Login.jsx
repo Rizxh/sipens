@@ -12,15 +12,11 @@ const MODES = {
     title: 'Masuk',
     subtitle: 'Masuk ke dashboard penilaian sales',
     submit: 'Masuk',
-    toggle: 'Belum punya akun?',
-    toggleAction: 'Daftar',
   },
   signup: {
     title: 'Daftar',
     subtitle: 'Buat akun admin untuk SIPENS',
     submit: 'Buat Akun',
-    toggle: 'Sudah punya akun?',
-    toggleAction: 'Masuk',
   },
 };
 
