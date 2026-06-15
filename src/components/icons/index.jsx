@@ -1,0 +1,75 @@
+import {
+  HiOutlineChartBar,
+  HiOutlineClipboardDocumentList,
+  HiOutlineUserGroup,
+  HiOutlineTrophy,
+  HiOutlineFolderOpen,
+  HiOutlineCalendar,
+  HiOutlineCalendarDays,
+  HiOutlineCheckCircle,
+  HiOutlineExclamationCircle,
+  HiOutlineStar,
+  HiOutlineXCircle,
+  HiOutlineCheck,
+  HiOutlineXMark,
+} from 'react-icons/hi2';
+import {
+  MdEmojiEvents,
+  MdLooksOne,
+  MdLooksTwo,
+  MdLooks3,
+  MdOutlineBalance,
+} from 'react-icons/md';
+import { LuCircle } from 'react-icons/lu';
+import { RiDashboardLine } from 'react-icons/ri';
+
+const iconClass = 'w-5 h-5 shrink-0';
+
+export const AppIcons = {
+  dashboard: HiOutlineChartBar,
+  criteria: HiOutlineClipboardDocumentList,
+  ahp: MdOutlineBalance,
+  sales: HiOutlineUserGroup,
+  wpResult: HiOutlineTrophy,
+  history: HiOutlineFolderOpen,
+  calendar: HiOutlineCalendar,
+  calendarDays: HiOutlineCalendarDays,
+  trophy: HiOutlineTrophy,
+  trophyFilled: MdEmojiEvents,
+  check: HiOutlineCheckCircle,
+  checkSimple: HiOutlineCheck,
+  warning: HiOutlineExclamationCircle,
+  error: HiOutlineXCircle,
+  star: HiOutlineStar,
+  folder: HiOutlineFolderOpen,
+  users: HiOutlineUserGroup,
+  chart: HiOutlineChartBar,
+  close: HiOutlineXMark,
+  circle: LuCircle,
+  logo: RiDashboardLine,
+  rank1: MdLooksOne,
+  rank2: MdLooksTwo,
+  rank3: MdLooks3,
+};
+
+export function Icon({ name, className = iconClass, ...props }) {
+  const Component = AppIcons[name];
+  if (!Component) return null;
+  return <Component className={className} aria-hidden="true" {...props} />;
+}
+
+export function RankIcon({ rank, className = 'w-5 h-5' }) {
+  if (rank === 1) return <Icon name="rank1" className={className} />;
+  if (rank === 2) return <Icon name="rank2" className={className} />;
+  if (rank === 3) return <Icon name="rank3" className={className} />;
+  return <span className="text-sm font-bold">{rank}</span>;
+}
+
+export const navItems = [
+  { to: '/dashboard', label: 'Dashboard', icon: 'dashboard' },
+  { to: '/criteria', label: 'Kriteria', icon: 'criteria' },
+  { to: '/ahp', label: 'AHP Bobot', icon: 'ahp' },
+  { to: '/sales', label: 'Data Sales', icon: 'sales' },
+  { to: '/wp-result', label: 'Hasil WP', icon: 'wpResult' },
+  { to: '/history', label: 'Riwayat', icon: 'history' },
+];
