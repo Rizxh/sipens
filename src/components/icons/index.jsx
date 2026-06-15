@@ -68,10 +68,10 @@ export function RankIcon({ rank, className = 'w-5 h-5' }) {
 }
 
 export const navItems = [
-  { to: '/dashboard', label: 'Dashboard', icon: 'dashboard' },
-  { to: '/criteria', label: 'Kriteria', icon: 'criteria' },
-  { to: '/ahp', label: 'AHP Bobot', icon: 'ahp' },
-  { to: '/sales', label: 'Data Sales', icon: 'sales' },
-  { to: '/wp-result', label: 'Hasil WP', icon: 'wpResult' },
-  { to: '/history', label: 'Riwayat', icon: 'history' },
+  { to: '/dashboard', label: 'Dashboard', shortLabel: 'Home', icon: 'dashboard' },
+  { to: '/criteria', label: 'Kriteria', shortLabel: 'Kriteria', icon: 'criteria' },
+  { to: '/ahp', label: 'AHP Bobot', shortLabel: 'AHP', icon: 'ahp' },
+  { to: '/sales', label: 'Data Sales', shortLabel: 'Sales', icon: 'sales' },
+  { to: '/wp-result', label: 'Hasil WP', shortLabel: 'WP', icon: 'wpResult' },
+  { to: '/history', label: 'Riwayat', shortLabel: 'Riwayat', icon: 'history' },
 ];
