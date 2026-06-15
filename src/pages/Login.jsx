@@ -218,7 +218,7 @@ export default function Login() {
         </div>
 
         <p className="text-center text-[11px] text-slate-400 mt-3">
-          AHP & Weighted Product · Dashboard Internal
+          AHP & Weighted Product
         </p>
       </div>
     </div>
