@@ -21,7 +21,7 @@ import {
   MdOutlineBalance,
 } from 'react-icons/md';
 import { LuCircle } from 'react-icons/lu';
-import { RiDashboardLine } from 'react-icons/ri';
+import SipensLogo from '../brand/SipensLogo';
 
 const iconClass = 'w-5 h-5 shrink-0';
 
@@ -46,11 +46,13 @@ export const AppIcons = {
   chart: HiOutlineChartBar,
   close: HiOutlineXMark,
   circle: LuCircle,
-  logo: RiDashboardLine,
+  logo: SipensLogo,
   rank1: MdLooksOne,
   rank2: MdLooksTwo,
   rank3: MdLooks3,
 };
+
+export { default as SipensLogo } from '../brand/SipensLogo';
 
 export function Icon({ name, className = iconClass, ...props }) {
   const Component = AppIcons[name];
