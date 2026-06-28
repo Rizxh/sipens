@@ -1,11 +1,11 @@
 -- =============================================================================
 -- SIPENS — Seed 10 Sales, 3 Kriteria
 -- Kriteria: Target Omset (benefit), Pelanggan Baru (benefit), Efektivitas Biaya (cost)
--- Periode : Jan–Jun 2025 | Juara berbeda tiap bulan
+-- Periode : Jan–Jun 2026 | Juara berbeda tiap bulan
 -- Juara   : Jan=Budi, Feb=Siti, Mar=Rina, Apr=Rudi, Mei=Andi, Jun=Maya
 -- =============================================================================
 
--- Hapus semua data lama (termasuk 90 sales extra jika ada)
+-- Hapus semua data lama (2025 dan 2026, termasuk 90 sales extra jika ada)
 DELETE FROM public.wp_results      WHERE period = '2025-01';
 DELETE FROM public.sales_scores    WHERE period = '2025-01';
 DELETE FROM public.ahp_weights     WHERE period = '2025-01';
@@ -30,6 +30,30 @@ DELETE FROM public.wp_results      WHERE period = '2025-06';
 DELETE FROM public.sales_scores    WHERE period = '2025-06';
 DELETE FROM public.ahp_weights     WHERE period = '2025-06';
 DELETE FROM public.ahp_comparisons WHERE period = '2025-06';
+DELETE FROM public.wp_results      WHERE period = '2026-01';
+DELETE FROM public.sales_scores    WHERE period = '2026-01';
+DELETE FROM public.ahp_weights     WHERE period = '2026-01';
+DELETE FROM public.ahp_comparisons WHERE period = '2026-01';
+DELETE FROM public.wp_results      WHERE period = '2026-02';
+DELETE FROM public.sales_scores    WHERE period = '2026-02';
+DELETE FROM public.ahp_weights     WHERE period = '2026-02';
+DELETE FROM public.ahp_comparisons WHERE period = '2026-02';
+DELETE FROM public.wp_results      WHERE period = '2026-03';
+DELETE FROM public.sales_scores    WHERE period = '2026-03';
+DELETE FROM public.ahp_weights     WHERE period = '2026-03';
+DELETE FROM public.ahp_comparisons WHERE period = '2026-03';
+DELETE FROM public.wp_results      WHERE period = '2026-04';
+DELETE FROM public.sales_scores    WHERE period = '2026-04';
+DELETE FROM public.ahp_weights     WHERE period = '2026-04';
+DELETE FROM public.ahp_comparisons WHERE period = '2026-04';
+DELETE FROM public.wp_results      WHERE period = '2026-05';
+DELETE FROM public.sales_scores    WHERE period = '2026-05';
+DELETE FROM public.ahp_weights     WHERE period = '2026-05';
+DELETE FROM public.ahp_comparisons WHERE period = '2026-05';
+DELETE FROM public.wp_results      WHERE period = '2026-06';
+DELETE FROM public.sales_scores    WHERE period = '2026-06';
+DELETE FROM public.ahp_weights     WHERE period = '2026-06';
+DELETE FROM public.ahp_comparisons WHERE period = '2026-06';
 DELETE FROM public.sales WHERE employee_id LIKE 'EMP%';
 
 -- Reset kriteria: nonaktifkan semua, insert/aktifkan 3 kriteria saja
@@ -54,9 +78,9 @@ INSERT INTO public.sales (name, employee_id) VALUES
   ('Hendra Gunawan', 'EMP009'),
   ('Lina Sari', 'EMP010');
 
--- AHP Bobot: 2025-01
+-- AHP Bobot: 2026-01
 INSERT INTO public.ahp_comparisons (period, criteria_a_id, criteria_b_id, value)
-SELECT '2025-01', a.id, b.id, v.val
+SELECT '2026-01', a.id, b.id, v.val
 FROM (VALUES
   ('Target Omset', 'Pelanggan Baru', 3),
   ('Target Omset', 'Efektivitas Biaya', 5),
@@ -66,7 +90,7 @@ JOIN public.criteria a ON a.name = v.criteria_a AND a.is_active = TRUE
 JOIN public.criteria b ON b.name = v.criteria_b AND b.is_active = TRUE;
 
 INSERT INTO public.ahp_weights (period, criteria_id, weight, lambda_max, ci, cr, is_consistent)
-SELECT '2025-01', c.id, w.weight, 3.041, 0.0205, 0.0353, TRUE
+SELECT '2026-01', c.id, w.weight, 3.041, 0.0205, 0.0353, TRUE
 FROM (VALUES
   ('Target Omset', 0.63300000),
   ('Pelanggan Baru', 0.26100000),
@@ -74,9 +98,9 @@ FROM (VALUES
 ) AS w(name, weight)
 JOIN public.criteria c ON c.name = w.name AND c.is_active = TRUE;
 
--- AHP Bobot: 2025-02
+-- AHP Bobot: 2026-02
 INSERT INTO public.ahp_comparisons (period, criteria_a_id, criteria_b_id, value)
-SELECT '2025-02', a.id, b.id, v.val
+SELECT '2026-02', a.id, b.id, v.val
 FROM (VALUES
   ('Target Omset', 'Pelanggan Baru', 3),
   ('Target Omset', 'Efektivitas Biaya', 5),
@@ -86,7 +110,7 @@ JOIN public.criteria a ON a.name = v.criteria_a AND a.is_active = TRUE
 JOIN public.criteria b ON b.name = v.criteria_b AND b.is_active = TRUE;
 
 INSERT INTO public.ahp_weights (period, criteria_id, weight, lambda_max, ci, cr, is_consistent)
-SELECT '2025-02', c.id, w.weight, 3.041, 0.0205, 0.0353, TRUE
+SELECT '2026-02', c.id, w.weight, 3.041, 0.0205, 0.0353, TRUE
 FROM (VALUES
   ('Target Omset', 0.63300000),
   ('Pelanggan Baru', 0.26100000),
@@ -94,9 +118,9 @@ FROM (VALUES
 ) AS w(name, weight)
 JOIN public.criteria c ON c.name = w.name AND c.is_active = TRUE;
 
--- AHP Bobot: 2025-03
+-- AHP Bobot: 2026-03
 INSERT INTO public.ahp_comparisons (period, criteria_a_id, criteria_b_id, value)
-SELECT '2025-03', a.id, b.id, v.val
+SELECT '2026-03', a.id, b.id, v.val
 FROM (VALUES
   ('Target Omset', 'Pelanggan Baru', 3),
   ('Target Omset', 'Efektivitas Biaya', 5),
@@ -106,7 +130,7 @@ JOIN public.criteria a ON a.name = v.criteria_a AND a.is_active = TRUE
 JOIN public.criteria b ON b.name = v.criteria_b AND b.is_active = TRUE;
 
 INSERT INTO public.ahp_weights (period, criteria_id, weight, lambda_max, ci, cr, is_consistent)
-SELECT '2025-03', c.id, w.weight, 3.041, 0.0205, 0.0353, TRUE
+SELECT '2026-03', c.id, w.weight, 3.041, 0.0205, 0.0353, TRUE
 FROM (VALUES
   ('Target Omset', 0.63300000),
   ('Pelanggan Baru', 0.26100000),
@@ -114,9 +138,9 @@ FROM (VALUES
 ) AS w(name, weight)
 JOIN public.criteria c ON c.name = w.name AND c.is_active = TRUE;
 
--- AHP Bobot: 2025-04
+-- AHP Bobot: 2026-04
 INSERT INTO public.ahp_comparisons (period, criteria_a_id, criteria_b_id, value)
-SELECT '2025-04', a.id, b.id, v.val
+SELECT '2026-04', a.id, b.id, v.val
 FROM (VALUES
   ('Target Omset', 'Pelanggan Baru', 3),
   ('Target Omset', 'Efektivitas Biaya', 5),
@@ -126,7 +150,7 @@ JOIN public.criteria a ON a.name = v.criteria_a AND a.is_active = TRUE
 JOIN public.criteria b ON b.name = v.criteria_b AND b.is_active = TRUE;
 
 INSERT INTO public.ahp_weights (period, criteria_id, weight, lambda_max, ci, cr, is_consistent)
-SELECT '2025-04', c.id, w.weight, 3.041, 0.0205, 0.0353, TRUE
+SELECT '2026-04', c.id, w.weight, 3.041, 0.0205, 0.0353, TRUE
 FROM (VALUES
   ('Target Omset', 0.63300000),
   ('Pelanggan Baru', 0.26100000),
@@ -134,9 +158,9 @@ FROM (VALUES
 ) AS w(name, weight)
 JOIN public.criteria c ON c.name = w.name AND c.is_active = TRUE;
 
--- AHP Bobot: 2025-05
+-- AHP Bobot: 2026-05
 INSERT INTO public.ahp_comparisons (period, criteria_a_id, criteria_b_id, value)
-SELECT '2025-05', a.id, b.id, v.val
+SELECT '2026-05', a.id, b.id, v.val
 FROM (VALUES
   ('Target Omset', 'Pelanggan Baru', 3),
   ('Target Omset', 'Efektivitas Biaya', 5),
@@ -146,7 +170,7 @@ JOIN public.criteria a ON a.name = v.criteria_a AND a.is_active = TRUE
 JOIN public.criteria b ON b.name = v.criteria_b AND b.is_active = TRUE;
 
 INSERT INTO public.ahp_weights (period, criteria_id, weight, lambda_max, ci, cr, is_consistent)
-SELECT '2025-05', c.id, w.weight, 3.041, 0.0205, 0.0353, TRUE
+SELECT '2026-05', c.id, w.weight, 3.041, 0.0205, 0.0353, TRUE
 FROM (VALUES
   ('Target Omset', 0.63300000),
   ('Pelanggan Baru', 0.26100000),
@@ -154,9 +178,9 @@ FROM (VALUES
 ) AS w(name, weight)
 JOIN public.criteria c ON c.name = w.name AND c.is_active = TRUE;
 
--- AHP Bobot: 2025-06
+-- AHP Bobot: 2026-06
 INSERT INTO public.ahp_comparisons (period, criteria_a_id, criteria_b_id, value)
-SELECT '2025-06', a.id, b.id, v.val
+SELECT '2026-06', a.id, b.id, v.val
 FROM (VALUES
   ('Target Omset', 'Pelanggan Baru', 3),
   ('Target Omset', 'Efektivitas Biaya', 5),
@@ -166,7 +190,7 @@ JOIN public.criteria a ON a.name = v.criteria_a AND a.is_active = TRUE
 JOIN public.criteria b ON b.name = v.criteria_b AND b.is_active = TRUE;
 
 INSERT INTO public.ahp_weights (period, criteria_id, weight, lambda_max, ci, cr, is_consistent)
-SELECT '2025-06', c.id, w.weight, 3.041, 0.0205, 0.0353, TRUE
+SELECT '2026-06', c.id, w.weight, 3.041, 0.0205, 0.0353, TRUE
 FROM (VALUES
   ('Target Omset', 0.63300000),
   ('Pelanggan Baru', 0.26100000),
@@ -175,14 +199,14 @@ FROM (VALUES
 JOIN public.criteria c ON c.name = w.name AND c.is_active = TRUE;
 
 -- ─────────────────────────────────────────────────────────────────
--- Nilai Sales: 2025-01
+-- Nilai Sales: 2026-01
 -- Juara: Budi Santoso (EMP001)
 --   Target Omset (TO)      — makin besar makin baik, bobot 63.3%
 --   Pelanggan Baru (PB)    — makin besar makin baik, bobot 26.1%
 --   Efektivitas Biaya (EB) — makin kecil makin baik, bobot 10.6%
 -- ─────────────────────────────────────────────────────────────────
 INSERT INTO public.sales_scores (sales_id, criteria_id, period, value)
-SELECT s.id, c.id, '2025-01', v.score
+SELECT s.id, c.id, '2026-01', v.score
 FROM (VALUES
   ('EMP001', 'Target Omset',      96),
   ('EMP001', 'Pelanggan Baru',    91),
@@ -219,7 +243,7 @@ JOIN public.sales s ON s.employee_id = v.employee_id
 JOIN public.criteria c ON c.name = v.criteria_name AND c.is_active = TRUE;
 
 INSERT INTO public.wp_results (sales_id, period, s_value, v_value, rank)
-SELECT s.id, '2025-01', r.s_val, r.v_val, r.rnk
+SELECT s.id, '2026-01', r.s_val, r.v_val, r.rnk
 FROM (VALUES
   ('EMP001', 47.47960548, 0.12314868, 1),
   ('EMP007', 38.80832638, 0.10065783, 2),
@@ -235,14 +259,14 @@ FROM (VALUES
 JOIN public.sales s ON s.employee_id = r.employee_id;
 
 -- ─────────────────────────────────────────────────────────────────
--- Nilai Sales: 2025-02
+-- Nilai Sales: 2026-02
 -- Juara: Siti Rahayu (EMP002)
 --   Target Omset (TO)      — makin besar makin baik, bobot 63.3%
 --   Pelanggan Baru (PB)    — makin besar makin baik, bobot 26.1%
 --   Efektivitas Biaya (EB) — makin kecil makin baik, bobot 10.6%
 -- ─────────────────────────────────────────────────────────────────
 INSERT INTO public.sales_scores (sales_id, criteria_id, period, value)
-SELECT s.id, c.id, '2025-02', v.score
+SELECT s.id, c.id, '2026-02', v.score
 FROM (VALUES
   ('EMP001', 'Target Omset',      83),
   ('EMP001', 'Pelanggan Baru',    80),
@@ -279,7 +303,7 @@ JOIN public.sales s ON s.employee_id = v.employee_id
 JOIN public.criteria c ON c.name = v.criteria_name AND c.is_active = TRUE;
 
 INSERT INTO public.wp_results (sales_id, period, s_value, v_value, rank)
-SELECT s.id, '2025-02', r.s_val, r.v_val, r.rnk
+SELECT s.id, '2026-02', r.s_val, r.v_val, r.rnk
 FROM (VALUES
   ('EMP002', 48.85584451, 0.12697504, 1),
   ('EMP009', 42.36199231, 0.11009769, 2),
@@ -295,14 +319,14 @@ FROM (VALUES
 JOIN public.sales s ON s.employee_id = r.employee_id;
 
 -- ─────────────────────────────────────────────────────────────────
--- Nilai Sales: 2025-03
+-- Nilai Sales: 2026-03
 -- Juara: Rina Wati (EMP008)
 --   Target Omset (TO)      — makin besar makin baik, bobot 63.3%
 --   Pelanggan Baru (PB)    — makin besar makin baik, bobot 26.1%
 --   Efektivitas Biaya (EB) — makin kecil makin baik, bobot 10.6%
 -- ─────────────────────────────────────────────────────────────────
 INSERT INTO public.sales_scores (sales_id, criteria_id, period, value)
-SELECT s.id, c.id, '2025-03', v.score
+SELECT s.id, c.id, '2026-03', v.score
 FROM (VALUES
   ('EMP001', 'Target Omset',      79),
   ('EMP001', 'Pelanggan Baru',    77),
@@ -339,7 +363,7 @@ JOIN public.sales s ON s.employee_id = v.employee_id
 JOIN public.criteria c ON c.name = v.criteria_name AND c.is_active = TRUE;
 
 INSERT INTO public.wp_results (sales_id, period, s_value, v_value, rank)
-SELECT s.id, '2025-03', r.s_val, r.v_val, r.rnk
+SELECT s.id, '2026-03', r.s_val, r.v_val, r.rnk
 FROM (VALUES
   ('EMP008', 47.80488795, 0.12586667, 1),
   ('EMP003', 40.38454797, 0.10632947, 2),
@@ -355,14 +379,14 @@ FROM (VALUES
 JOIN public.sales s ON s.employee_id = r.employee_id;
 
 -- ─────────────────────────────────────────────────────────────────
--- Nilai Sales: 2025-04
+-- Nilai Sales: 2026-04
 -- Juara: Rudi Hartono (EMP005)
 --   Target Omset (TO)      — makin besar makin baik, bobot 63.3%
 --   Pelanggan Baru (PB)    — makin besar makin baik, bobot 26.1%
 --   Efektivitas Biaya (EB) — makin kecil makin baik, bobot 10.6%
 -- ─────────────────────────────────────────────────────────────────
 INSERT INTO public.sales_scores (sales_id, criteria_id, period, value)
-SELECT s.id, c.id, '2025-04', v.score
+SELECT s.id, c.id, '2026-04', v.score
 FROM (VALUES
   ('EMP001', 'Target Omset',      77),
   ('EMP001', 'Pelanggan Baru',    75),
@@ -399,7 +423,7 @@ JOIN public.sales s ON s.employee_id = v.employee_id
 JOIN public.criteria c ON c.name = v.criteria_name AND c.is_active = TRUE;
 
 INSERT INTO public.wp_results (sales_id, period, s_value, v_value, rank)
-SELECT s.id, '2025-04', r.s_val, r.v_val, r.rnk
+SELECT s.id, '2026-04', r.s_val, r.v_val, r.rnk
 FROM (VALUES
   ('EMP005', 48.80670838, 0.12584061, 1),
   ('EMP007', 41.97016598, 0.10821364, 2),
@@ -415,14 +439,14 @@ FROM (VALUES
 JOIN public.sales s ON s.employee_id = r.employee_id;
 
 -- ─────────────────────────────────────────────────────────────────
--- Nilai Sales: 2025-05
+-- Nilai Sales: 2026-05
 -- Juara: Andi Wijaya (EMP003)
 --   Target Omset (TO)      — makin besar makin baik, bobot 63.3%
 --   Pelanggan Baru (PB)    — makin besar makin baik, bobot 26.1%
 --   Efektivitas Biaya (EB) — makin kecil makin baik, bobot 10.6%
 -- ─────────────────────────────────────────────────────────────────
 INSERT INTO public.sales_scores (sales_id, criteria_id, period, value)
-SELECT s.id, c.id, '2025-05', v.score
+SELECT s.id, c.id, '2026-05', v.score
 FROM (VALUES
   ('EMP001', 'Target Omset',      84),
   ('EMP001', 'Pelanggan Baru',    84),
@@ -459,7 +483,7 @@ JOIN public.sales s ON s.employee_id = v.employee_id
 JOIN public.criteria c ON c.name = v.criteria_name AND c.is_active = TRUE;
 
 INSERT INTO public.wp_results (sales_id, period, s_value, v_value, rank)
-SELECT s.id, '2025-05', r.s_val, r.v_val, r.rnk
+SELECT s.id, '2026-05', r.s_val, r.v_val, r.rnk
 FROM (VALUES
   ('EMP003', 46.75506093, 0.12136175, 1),
   ('EMP001', 40.73034204, 0.10572343, 2),
@@ -475,14 +499,14 @@ FROM (VALUES
 JOIN public.sales s ON s.employee_id = r.employee_id;
 
 -- ─────────────────────────────────────────────────────────────────
--- Nilai Sales: 2025-06
+-- Nilai Sales: 2026-06
 -- Juara: Maya Putri (EMP006)
 --   Target Omset (TO)      — makin besar makin baik, bobot 63.3%
 --   Pelanggan Baru (PB)    — makin besar makin baik, bobot 26.1%
 --   Efektivitas Biaya (EB) — makin kecil makin baik, bobot 10.6%
 -- ─────────────────────────────────────────────────────────────────
 INSERT INTO public.sales_scores (sales_id, criteria_id, period, value)
-SELECT s.id, c.id, '2025-06', v.score
+SELECT s.id, c.id, '2026-06', v.score
 FROM (VALUES
   ('EMP001', 'Target Omset',      80),
   ('EMP001', 'Pelanggan Baru',    77),
@@ -519,7 +543,7 @@ JOIN public.sales s ON s.employee_id = v.employee_id
 JOIN public.criteria c ON c.name = v.criteria_name AND c.is_active = TRUE;
 
 INSERT INTO public.wp_results (sales_id, period, s_value, v_value, rank)
-SELECT s.id, '2025-06', r.s_val, r.v_val, r.rnk
+SELECT s.id, '2026-06', r.s_val, r.v_val, r.rnk
 FROM (VALUES
   ('EMP006', 48.71818477, 0.12573863, 1),
   ('EMP010', 42.01860360, 0.10844742, 2),
@@ -536,7 +560,7 @@ JOIN public.sales s ON s.employee_id = r.employee_id;
 
 -- =============================================================================
 -- Selesai! Jalankan di Supabase SQL Editor.
--- Hasil: 10 sales, 6 bulan, juara berbeda tiap bulan:
+-- Hasil: 10 sales, 6 bulan (Jan–Jun 2026), juara berbeda tiap bulan:
 --   Jan=Budi Santoso   Feb=Siti Rahayu  Mar=Rina Wati
 --   Apr=Rudi Hartono   Mei=Andi Wijaya  Jun=Maya Putri
 -- =============================================================================

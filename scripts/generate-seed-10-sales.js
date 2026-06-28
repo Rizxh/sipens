@@ -6,7 +6,7 @@ import { writeFileSync } from 'fs';
 import { resolve } from 'path';
 import { computeWP } from '../src/utils/wp.js';
 
-const PERIODS = ['2025-01', '2025-02', '2025-03', '2025-04', '2025-05', '2025-06'];
+const PERIODS = ['2026-01', '2026-02', '2026-03', '2026-04', '2026-05', '2026-06'];
 
 const SALES = [
   { name: 'Budi Santoso',   employeeId: 'EMP001' },
@@ -141,13 +141,16 @@ const lines = [];
 lines.push(`-- =============================================================================`);
 lines.push(`-- SIPENS — Seed 10 Sales, 3 Kriteria`);
 lines.push(`-- Kriteria: Target Omset (benefit), Pelanggan Baru (benefit), Efektivitas Biaya (cost)`);
-lines.push(`-- Periode : Jan–Jun 2025 | Juara berbeda tiap bulan`);
+lines.push(`-- Periode : Jan–Jun 2026 | Juara berbeda tiap bulan`);
 lines.push(`-- Juara   : Jan=Budi, Feb=Siti, Mar=Rina, Apr=Rudi, Mei=Andi, Jun=Maya`);
 lines.push(`-- =============================================================================`);
 lines.push('');
-lines.push(`-- Hapus semua data lama (termasuk 90 sales extra jika ada)`);
-
-for (const p of PERIODS) {
+lines.push(`-- Hapus semua data lama (2025 dan 2026, termasuk 90 sales extra jika ada)`);
+const ALL_PERIODS = [
+  '2025-01','2025-02','2025-03','2025-04','2025-05','2025-06',
+  '2026-01','2026-02','2026-03','2026-04','2026-05','2026-06',
+];
+for (const p of ALL_PERIODS) {
   lines.push(`DELETE FROM public.wp_results      WHERE period = '${p}';`);
   lines.push(`DELETE FROM public.sales_scores    WHERE period = '${p}';`);
   lines.push(`DELETE FROM public.ahp_weights     WHERE period = '${p}';`);
@@ -246,7 +249,7 @@ for (let pi = 0; pi < PERIODS.length; pi++) {
 
 lines.push(`-- =============================================================================`);
 lines.push(`-- Selesai! Jalankan di Supabase SQL Editor.`);
-lines.push(`-- Hasil: 10 sales, 6 bulan, juara berbeda tiap bulan:`);
+lines.push(`-- Hasil: 10 sales, 6 bulan (Jan–Jun 2026), juara berbeda tiap bulan:`);
 lines.push(`--   Jan=Budi Santoso   Feb=Siti Rahayu  Mar=Rina Wati`);
 lines.push(`--   Apr=Rudi Hartono   Mei=Andi Wijaya  Jun=Maya Putri`);
 lines.push(`-- =============================================================================`);
