@@ -12,27 +12,48 @@ import PageHeader from '../components/ui/PageHeader';
 const quickActions = [
   {
     to: '/criteria',
-    title: 'Kelola Kriteria',
-    description: 'Tambah atau edit kriteria penilaian',
+    title: 'Kriteria',
+    description: 'Kelola kriteria penilaian',
     icon: 'criteria',
+    gradient: 'from-violet-500 to-purple-600',
+    light: 'bg-violet-50 border-violet-200',
+    step: 1,
   },
   {
     to: '/ahp',
-    title: 'Input Bobot AHP',
+    title: 'AHP Bobot',
     description: 'Matriks perbandingan berpasangan',
     icon: 'ahp',
+    gradient: 'from-blue-500 to-indigo-600',
+    light: 'bg-blue-50 border-blue-200',
+    step: 2,
   },
   {
     to: '/sales',
     title: 'Data Sales',
-    description: 'Input nilai aktual per sales',
+    description: 'Input nilai aktual per periode',
     icon: 'sales',
+    gradient: 'from-teal-500 to-emerald-600',
+    light: 'bg-teal-50 border-teal-200',
+    step: 3,
   },
   {
     to: '/wp-result',
-    title: 'Lihat Hasil WP',
+    title: 'Hasil WP',
     description: 'Ranking & sales terbaik',
     icon: 'wpResult',
+    gradient: 'from-amber-500 to-orange-600',
+    light: 'bg-amber-50 border-amber-200',
+    step: 4,
+  },
+  {
+    to: '/tutorial',
+    title: 'Tutorial',
+    description: 'Panduan cara pakai SIPENS',
+    icon: 'tutorial',
+    gradient: 'from-rose-500 to-pink-600',
+    light: 'bg-rose-50 border-rose-200',
+    step: null,
   },
 ];
 
@@ -184,33 +205,38 @@ export default function Dashboard() {
           )}
         </Card>
 
-        <Card>
-          <h2 className="text-lg font-semibold text-slate-900 mb-4">
-            Aksi Cepat
-          </h2>
-          <div className="space-y-2">
+        <div className="space-y-3">
+          <h2 className="text-base font-bold text-slate-900">Menu Utama</h2>
+          <div className="grid grid-cols-1 gap-2.5">
             {quickActions.map((action) => (
               <Link
                 key={action.to}
                 to={action.to}
-                className="flex items-start gap-3 rounded-lg border border-slate-200 p-3 hover:border-brand-300 hover:bg-brand-50/50 transition-colors group"
+                className="group flex items-center gap-3.5 rounded-xl border border-slate-200 bg-white p-3.5 hover:shadow-md hover:border-slate-300 transition-all"
               >
-                <Icon
-                  name={action.icon}
-                  className="w-5 h-5 text-brand-600 mt-0.5 shrink-0"
-                />
-                <div>
-                  <p className="text-sm font-medium text-slate-900 group-hover:text-brand-700">
-                    {action.title}
-                  </p>
-                  <p className="text-xs text-slate-500 mt-0.5">
-                    {action.description}
-                  </p>
+                <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br ${action.gradient} shadow-sm`}>
+                  <Icon name={action.icon} className="w-5 h-5 text-white" />
                 </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2">
+                    <p className="text-sm font-semibold text-slate-800 group-hover:text-brand-700 transition-colors">
+                      {action.title}
+                    </p>
+                    {action.step && (
+                      <span className="text-[10px] rounded-full bg-slate-100 text-slate-500 px-1.5 py-0.5 font-semibold">
+                        Langkah {action.step}
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-xs text-slate-500 mt-0.5 truncate">{action.description}</p>
+                </div>
+                <svg className="w-4 h-4 text-slate-300 group-hover:text-brand-500 shrink-0 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                </svg>
               </Link>
             ))}
           </div>
-        </Card>
+        </div>
       </div>
 
       <Card>
