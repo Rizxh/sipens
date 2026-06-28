@@ -11,6 +11,7 @@ import AHP from './pages/AHP';
 import SalesData from './pages/SalesData';
 import WPResult from './pages/WPResult';
 import History from './pages/History';
+import Tutorial from './pages/Tutorial';
 import NotFound from './pages/NotFound';
 
 export default function App() {
@@ -33,6 +34,7 @@ export default function App() {
               <Route path="sales" element={<SalesData />} />
               <Route path="wp-result" element={<WPResult />} />
               <Route path="history" element={<History />} />
+              <Route path="tutorial" element={<Tutorial />} />
             </Route>
           </Route>
 

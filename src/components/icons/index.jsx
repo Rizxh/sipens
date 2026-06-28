@@ -14,6 +14,7 @@ import {
   HiOutlineXMark,
   HiOutlineInformationCircle,
   HiOutlineMagnifyingGlass,
+  HiOutlineBookOpen,
 } from 'react-icons/hi2';
 import {
   MdEmojiEvents,
@@ -50,6 +51,7 @@ export const AppIcons = {
   circle: LuCircle,
   info: HiOutlineInformationCircle,
   search: HiOutlineMagnifyingGlass,
+  tutorial: HiOutlineBookOpen,
   logo: SipensLogo,
   rank1: MdLooksOne,
   rank2: MdLooksTwo,
@@ -78,4 +80,5 @@ export const navItems = [
   { to: '/sales', label: 'Data Sales', shortLabel: 'Sales', icon: 'sales' },
   { to: '/wp-result', label: 'Hasil WP', shortLabel: 'WP', icon: 'wpResult' },
   { to: '/history', label: 'Riwayat', shortLabel: 'Riwayat', icon: 'history' },
+  { to: '/tutorial', label: 'Tutorial', shortLabel: 'Tutorial', icon: 'tutorial' },
 ];

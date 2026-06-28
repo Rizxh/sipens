@@ -191,7 +191,7 @@ function BottomNav() {
       className="md:hidden fixed bottom-0 inset-x-0 z-30 bg-white/95 backdrop-blur-md border-t border-slate-200 shadow-[0_-4px_20px_rgba(15,23,42,0.06)]"
       style={{ paddingBottom: 'max(env(safe-area-inset-bottom, 0px), 4px)' }}
     >
-      <div className="grid grid-cols-6 gap-0 px-0.5 pt-1">
+      <div className="grid grid-cols-7 gap-0 px-0.5 pt-1">
         {navItems.map((item) => {
           const isActive =
             location.pathname === item.to
