@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import WPResultChart from '../components/wp/WPResultChart';
 import WPRankingTable from '../components/wp/WPRankingTable';
@@ -31,6 +31,18 @@ export default function History() {
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [deleteError, setDeleteError] = useState('');
+  const [search, setSearch] = useState('');
+
+  const filteredPeriods = useMemo(() => {
+    const q = search.trim().toLowerCase();
+    if (!q) return periods;
+    return periods.filter(
+      (p) =>
+        p.period.includes(q) ||
+        p.periodLabel.toLowerCase().includes(q) ||
+        (p.bestSales?.name ?? '').toLowerCase().includes(q)
+    );
+  }, [periods, search]);
 
   if (loading) {
     return (
@@ -69,43 +81,81 @@ export default function History() {
         </Card>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-12 gap-4 sm:gap-6">
-          <div className="md:col-span-4 space-y-2 sm:space-y-3">
+          <div className="md:col-span-4 space-y-3">
+            {/* Search by month */}
+            <div className="relative">
+              <Icon
+                name="search"
+                className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none"
+              />
+              <input
+                type="text"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder="Cari bulan, tahun, atau nama sales…"
+                className="w-full rounded-xl border border-slate-300 pl-9 pr-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500"
+              />
+              {search && (
+                <button
+                  type="button"
+                  onClick={() => setSearch('')}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                >
+                  <Icon name="close" className="w-4 h-4" />
+                </button>
+              )}
+            </div>
+
             <h2 className="text-sm font-semibold text-slate-700 uppercase tracking-wide">
               Daftar Periode
+              {search && (
+                <span className="ml-2 text-xs text-slate-500 normal-case font-normal">
+                  ({filteredPeriods.length} dari {periods.length})
+                </span>
+              )}
             </h2>
-            {periods.map((item) => (
-              <button
-                key={item.period}
-                type="button"
-                onClick={() => setSelectedPeriod(item.period)}
-                className={[
-                  'w-full text-left rounded-xl border p-4 transition-all',
-                  selectedPeriod === item.period
-                    ? 'border-brand-400 bg-brand-50 shadow-sm ring-1 ring-brand-200'
-                    : 'border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50',
-                ].join(' ')}
-              >
-                <div className="flex items-start justify-between gap-2">
-                  <div>
-                    <p className="font-semibold text-slate-900">{item.periodLabel}</p>
-                    <p className="text-xs text-slate-500 mt-0.5">{item.period}</p>
-                  </div>
-                  <Badge variant="benefit">{item.participantCount} sales</Badge>
-                </div>
-                {item.bestSales && (
-                  <p className="text-sm text-amber-800 mt-2 flex items-center gap-1.5">
-                    <Icon name="trophyFilled" className="w-4 h-4 shrink-0" />
-                    {item.bestSales.name}
-                    <span className="text-slate-500">
-                      ({formatVPercent(item.bestSales.vValue)})
-                    </span>
-                  </p>
-                )}
-                <p className="text-xs text-slate-400 mt-2">
-                  Disimpan: {formatDateTime(item.savedAt)}
+
+            {filteredPeriods.length === 0 ? (
+              <Card>
+                <p className="text-sm text-slate-500 text-center py-4">
+                  Tidak ada periode yang cocok dengan &quot;{search}&quot;.
                 </p>
-              </button>
-            ))}
+              </Card>
+            ) : (
+              filteredPeriods.map((item) => (
+                <button
+                  key={item.period}
+                  type="button"
+                  onClick={() => setSelectedPeriod(item.period)}
+                  className={[
+                    'w-full text-left rounded-xl border p-4 transition-all',
+                    selectedPeriod === item.period
+                      ? 'border-brand-400 bg-brand-50 shadow-sm ring-1 ring-brand-200'
+                      : 'border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50',
+                  ].join(' ')}
+                >
+                  <div className="flex items-start justify-between gap-2">
+                    <div>
+                      <p className="font-semibold text-slate-900">{item.periodLabel}</p>
+                      <p className="text-xs text-slate-500 mt-0.5">{item.period}</p>
+                    </div>
+                    <Badge variant="benefit">{item.participantCount} sales</Badge>
+                  </div>
+                  {item.bestSales && (
+                    <p className="text-sm text-amber-800 mt-2 flex items-center gap-1.5">
+                      <Icon name="trophyFilled" className="w-4 h-4 shrink-0" />
+                      {item.bestSales.name}
+                      <span className="text-slate-500">
+                        ({formatVPercent(item.bestSales.vValue)})
+                      </span>
+                    </p>
+                  )}
+                  <p className="text-xs text-slate-400 mt-2">
+                    Disimpan: {formatDateTime(item.savedAt)}
+                  </p>
+                </button>
+              ))
+            )}
           </div>
 
           <div className="md:col-span-8">
@@ -199,7 +249,7 @@ function PeriodDetail({ data, ahpMeta, detailLoading, onDelete }) {
           <div className="mt-4 flex items-center gap-3 rounded-xl bg-amber-50 border border-amber-200 p-4">
             <Icon name="trophyFilled" className="w-8 h-8 text-amber-700 shrink-0" />
             <div>
-              <p className="text-xs font-medium text-amber-700">Sales Terbaik</p>
+              <p className="text-xs font-medium text-amber-700">Sales Terbaik Bulan Ini</p>
               <p className="font-bold text-slate-900">{data.bestSales.name}</p>
               <p className="text-sm text-slate-600">
                 {data.bestSales.employeeId} · V = {formatVPercent(data.bestSales.vValue)}
@@ -222,14 +272,19 @@ function PeriodDetail({ data, ahpMeta, detailLoading, onDelete }) {
             <MetaItem label="CR" value={Number(ahpMeta.cr).toFixed(4)} />
             <MetaItem
               label="Konsisten"
-              value={ahpMeta.is_consistent ? 'Ya' : 'Tidak'}
+              value={ahpMeta.is_consistent ? 'Ya ✓' : 'Tidak ✗'}
+              highlight={!ahpMeta.is_consistent}
             />
           </div>
         </Card>
       ) : null}
 
       <Card>
-        <h3 className="text-base font-semibold text-slate-900 mb-4">Grafik Nilai V</h3>
+        <h3 className="text-base font-semibold text-slate-900 mb-1">Grafik Nilai V</h3>
+        <p className="text-xs text-slate-500 mb-4">
+          Nilai V = S_i ÷ ΣS — menunjukkan proporsi relatif skor setiap sales.
+          Batang tertinggi = sales terbaik.
+        </p>
         <WPResultChart results={chartResults} />
       </Card>
 
@@ -241,11 +296,16 @@ function PeriodDetail({ data, ahpMeta, detailLoading, onDelete }) {
   );
 }
 
-function MetaItem({ label, value }) {
+function MetaItem({ label, value, highlight }) {
   return (
-    <div className="rounded-lg bg-slate-50 border border-slate-200 p-3">
+    <div className={[
+      'rounded-lg border p-3',
+      highlight ? 'border-red-200 bg-red-50' : 'border-slate-200 bg-slate-50',
+    ].join(' ')}>
       <p className="text-xs text-slate-500">{label}</p>
-      <p className="font-semibold text-slate-900 mt-0.5">{value}</p>
+      <p className={['font-semibold mt-0.5', highlight ? 'text-red-700' : 'text-slate-900'].join(' ')}>
+        {value}
+      </p>
     </div>
   );
 }

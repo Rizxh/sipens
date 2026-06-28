@@ -12,6 +12,8 @@ import {
   HiOutlineXCircle,
   HiOutlineCheck,
   HiOutlineXMark,
+  HiOutlineInformationCircle,
+  HiOutlineMagnifyingGlass,
 } from 'react-icons/hi2';
 import {
   MdEmojiEvents,
@@ -46,6 +48,8 @@ export const AppIcons = {
   chart: HiOutlineChartBar,
   close: HiOutlineXMark,
   circle: LuCircle,
+  info: HiOutlineInformationCircle,
+  search: HiOutlineMagnifyingGlass,
   logo: SipensLogo,
   rank1: MdLooksOne,
   rank2: MdLooksTwo,
