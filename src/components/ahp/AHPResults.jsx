@@ -31,8 +31,38 @@ function InfoIcon({ tooltip, maxWidth }) {
 export default function AHPResults({ criteria, ahpResult }) {
   if (!ahpResult || !criteria.length) return null;
 
+  const n = criteria.length;
+
   return (
     <div className="space-y-6">
+
+      {/* ── Penjelasan Rumus AHP ── */}
+      <Card>
+        <div className="flex items-center gap-2 mb-4">
+          <h3 className="text-base font-semibold text-slate-900">📐 Rumus Perhitungan AHP</h3>
+        </div>
+        <div className="space-y-3 text-sm">
+          <div className="grid sm:grid-cols-2 gap-3">
+            <FormulaBox label="Bobot (w)" formula="w_i = rata-rata baris matriks ternormalisasi" note="Tiap sel dibagi jumlah kolomnya, lalu rata-rata per baris." />
+            <FormulaBox label="λmax" formula="λmax = Σ (jumlah baris × w_i) / w_i  ÷  n" note="Nilai eigen terbesar. Konsisten sempurna jika λmax = n." />
+            <FormulaBox label="CI (Consistency Index)" formula="CI = (λmax − n) / (n − 1)" note={`Untuk ${n} kriteria: CI = (λmax − ${n}) / ${n - 1}`} />
+            <FormulaBox label="CR (Consistency Ratio)" formula="CR = CI / RI" note={`RI untuk n=${n}: ${ahpResult.randomIndex.toFixed(2)}. Syarat: CR ≤ 0.1`} />
+          </div>
+          <div className="rounded-lg bg-slate-50 border border-slate-200 px-3 py-2 text-xs text-slate-500">
+            <strong>Tabel RI Saaty:</strong> n=1→0 | n=2→0 | n=3→0.58 | n=4→0.90 | n=5→1.12 | n=6→1.24 | n=7→1.32
+          </div>
+          {ahpResult.isConsistent && (
+            <div className="rounded-lg bg-slate-50 border border-slate-200 px-3 py-2 text-xs text-slate-600 space-y-0.5 font-mono">
+              <p className="font-sans font-semibold text-slate-700 mb-1">Hasil untuk matriks ini:</p>
+              <p>λmax = {Number(ahpResult.lambdaMax).toFixed(4)}</p>
+              <p>CI   = ({Number(ahpResult.lambdaMax).toFixed(4)} − {n}) / ({n} − 1) = {Number(ahpResult.ci).toFixed(4)}</p>
+              <p>RI   = {Number(ahpResult.randomIndex).toFixed(2)}  (n = {n})</p>
+              <p className="text-emerald-700 font-bold">CR   = {Number(ahpResult.ci).toFixed(4)} / {Number(ahpResult.randomIndex).toFixed(2)} = {Number(ahpResult.cr).toFixed(4)} ≤ 0.1 ✓</p>
+            </div>
+          )}
+        </div>
+      </Card>
+
       <Card>
         <div className="flex items-center gap-2 mb-4">
           <h3 className="text-base font-semibold text-slate-900">Consistency Check</h3>
@@ -245,6 +275,16 @@ function Metric({ label, value, highlight, tooltip }) {
       >
         {value}
       </p>
+    </div>
+  );
+}
+
+function FormulaBox({ label, formula, note }) {
+  return (
+    <div className="rounded-lg border border-slate-200 bg-slate-50 p-3">
+      <p className="text-xs font-semibold text-slate-600 mb-1">{label}</p>
+      <p className="font-mono text-xs text-slate-800 mb-1">{formula}</p>
+      {note && <p className="text-xs text-slate-500">{note}</p>}
     </div>
   );
 }

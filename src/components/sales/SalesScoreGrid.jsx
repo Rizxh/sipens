@@ -90,7 +90,7 @@ export default function SalesScoreGrid({ sales, criteria, scores, onChange, disa
                 {criteria.map((c, colIdx) => {
                   const value = scores[s.id]?.[c.id] ?? '';
                   const num = Number(value);
-                  const invalid = value !== '' && (Number.isNaN(num) || num <= 0);
+                  const invalid = value !== '' && (Number.isNaN(num) || num < 1 || num > 10);
                   const filled = value !== '' && !invalid;
                   const isCost = c.type === 'cost';
                   const isLastCol = colIdx === criteria.length - 1;
@@ -106,9 +106,10 @@ export default function SalesScoreGrid({ sales, criteria, scores, onChange, disa
                       <div className="relative">
                         <input
                           type="number"
-                          min="0"
-                          step="any"
-                          placeholder="0"
+                          min="1"
+                          max="10"
+                          step="1"
+                          placeholder="1–10"
                           value={value}
                           onChange={(e) => onChange(s.id, c.id, e.target.value)}
                           disabled={disabled}
@@ -128,7 +129,7 @@ export default function SalesScoreGrid({ sales, criteria, scores, onChange, disa
                         />
                         {invalid && (
                           <p className="absolute -bottom-4 left-0 right-0 text-center text-[10px] text-red-500">
-                            harus &gt; 0
+                            harus 1–10
                           </p>
                         )}
                       </div>
