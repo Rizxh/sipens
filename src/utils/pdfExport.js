@@ -177,7 +177,7 @@ function addRankingTable(doc, startY, results) {
 
   autoTable(doc, {
     startY,
-    head: [['#', 'Nama', 'ID Karyawan', 'Nilai S', 'Nilai V', 'Catatan']],
+    head: [['#', 'Nama', 'ID Karyawan', 'Total', 'Nilai (%)', 'Catatan']],
     body: built.map((b) => b.row),
     theme: 'striped',
     headStyles: { fillColor: NAVY, textColor: 255, fontStyle: 'bold', fontSize: 9 },
