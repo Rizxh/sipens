@@ -6,6 +6,23 @@ import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { calculateVStats, classifyPerformance, formatVPercent, PERFORMANCE_META } from './wp';
 
+const PAGE_WIDTH = 210;
+const PAGE_HEIGHT = 297;
+const MARGIN = 14;
+const CONTENT_WIDTH = PAGE_WIDTH - MARGIN * 2;
+
+const NAVY = [30, 64, 90];
+const NAVY_LIGHT = [226, 232, 240];
+const TEXT_MUTED = [100, 116, 139];
+const TEXT_DARK = [15, 23, 42];
+const GOLD_BG = [254, 249, 224];
+
+const NOTE_COLORS = {
+  kurang_baik: [185, 28, 28],
+  baik: [29, 78, 216],
+  sangat_baik: [180, 83, 9],
+};
+
 function formatNow() {
   return new Date().toLocaleString('id-ID', {
     day: 'numeric',
@@ -16,40 +33,122 @@ function formatNow() {
   });
 }
 
-function drawHeader(doc, subtitle) {
-  const pageWidth = doc.internal.pageSize.getWidth();
+function formatDateTime(iso) {
+  return new Date(iso).toLocaleString('id-ID', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  });
+}
 
-  doc.setFillColor(30, 64, 90);
-  doc.rect(0, 0, pageWidth, 28, 'F');
+/** Pastikan cukup ruang tersisa di halaman; kalau tidak, pindah ke halaman baru. */
+function ensureSpace(doc, y, needed) {
+  if (y + needed > PAGE_HEIGHT - 18) {
+    doc.addPage();
+    return 24;
+  }
+  return y;
+}
+
+function drawHeader(doc, subtitle, periodLabel) {
+  doc.setFillColor(...NAVY);
+  doc.rect(0, 0, PAGE_WIDTH, 30, 'F');
 
   doc.setTextColor(255, 255, 255);
   doc.setFont('helvetica', 'bold');
-  doc.setFontSize(16);
-  doc.text('SIPENS', 14, 13);
+  doc.setFontSize(17);
+  doc.text('SIPENS', MARGIN, 13);
 
   doc.setFont('helvetica', 'normal');
-  doc.setFontSize(9);
-  doc.text('Sistem Pendukung Keputusan Penilaian Sales Terbaik', 14, 19);
+  doc.setFontSize(8.5);
+  doc.text('Sistem Pendukung Keputusan Penilaian Sales Terbaik', MARGIN, 19);
 
-  doc.setFontSize(11);
+  doc.setDrawColor(255, 255, 255);
+  doc.setLineWidth(0.2);
+  doc.line(MARGIN, 22.5, PAGE_WIDTH - MARGIN, 22.5);
+
   doc.setFont('helvetica', 'bold');
-  doc.text(subtitle, 14, 25);
+  doc.setFontSize(10.5);
+  doc.text(subtitle, MARGIN, 27.5);
 
-  doc.setTextColor(20, 20, 20);
+  if (periodLabel) {
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(10);
+    doc.text(periodLabel, PAGE_WIDTH - MARGIN, 27.5, { align: 'right' });
+  }
+
+  doc.setTextColor(...TEXT_DARK);
+}
+
+function drawContinuationHeader(doc) {
+  doc.setFontSize(8);
+  doc.setFont('helvetica', 'bold');
+  doc.setTextColor(...NAVY);
+  doc.text('SIPENS', MARGIN, 12);
+  doc.setDrawColor(...NAVY_LIGHT);
+  doc.setLineWidth(0.2);
+  doc.line(MARGIN, 15, PAGE_WIDTH - MARGIN, 15);
+  doc.setTextColor(...TEXT_DARK);
 }
 
 function drawFooter(doc) {
   const pageCount = doc.internal.getNumberOfPages();
-  const pageWidth = doc.internal.pageSize.getWidth();
-  const pageHeight = doc.internal.pageSize.getHeight();
 
   for (let i = 1; i <= pageCount; i++) {
     doc.setPage(i);
-    doc.setFontSize(8);
-    doc.setTextColor(120, 120, 120);
-    doc.text(`Dicetak: ${formatNow()}`, 14, pageHeight - 8);
-    doc.text(`Halaman ${i} dari ${pageCount}`, pageWidth - 14, pageHeight - 8, { align: 'right' });
+    if (i > 1) drawContinuationHeader(doc);
+
+    doc.setDrawColor(...NAVY_LIGHT);
+    doc.setLineWidth(0.2);
+    doc.line(MARGIN, PAGE_HEIGHT - 13, PAGE_WIDTH - MARGIN, PAGE_HEIGHT - 13);
+
+    doc.setFontSize(7.5);
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(...TEXT_MUTED);
+    doc.text(`Dicetak: ${formatNow()}`, MARGIN, PAGE_HEIGHT - 8);
+    doc.text(`Halaman ${i} dari ${pageCount}`, PAGE_WIDTH - MARGIN, PAGE_HEIGHT - 8, { align: 'right' });
   }
+}
+
+/** Judul section dengan aksen kotak warna di kiri, konsisten spacing-nya. */
+function sectionTitle(doc, y, label, needed = 30) {
+  y = ensureSpace(doc, y, needed);
+
+  doc.setFillColor(...NAVY);
+  doc.rect(MARGIN, y - 3.2, 2.2, 4.2, 'F');
+
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(10.5);
+  doc.setTextColor(...TEXT_DARK);
+  doc.text(label.toUpperCase(), MARGIN + 5, y);
+
+  return y + 5;
+}
+
+/** Tabel label:value tanpa header, border tipis, dipakai untuk kartu ringkasan. */
+function infoTable(doc, startY, startX, width, rows) {
+  autoTable(doc, {
+    startY,
+    body: rows,
+    theme: 'grid',
+    tableWidth: width,
+    margin: { left: startX },
+    styles: {
+      fontSize: 8.8,
+      cellPadding: 2.2,
+      lineColor: NAVY_LIGHT,
+      lineWidth: 0.15,
+      textColor: TEXT_DARK,
+    },
+    columnStyles: {
+      0: { fontStyle: 'bold', textColor: TEXT_MUTED, cellWidth: width * 0.42 },
+      1: { cellWidth: width * 0.58 },
+    },
+  });
+
+  return doc.lastAutoTable.finalY;
 }
 
 function buildRankingRows(results) {
@@ -57,51 +156,49 @@ function buildRankingRows(results) {
 
   return results.map((r) => {
     const category = classifyPerformance(r.vValue, vStats);
-    const note = PERFORMANCE_META[category].label;
-
-    return [
-      r.rank,
-      r.name ?? '—',
-      r.employeeId ?? '—',
-      Number(r.sValue ?? 0).toFixed(6),
-      formatVPercent(r.vValue ?? 0),
-      note,
-    ];
+    return {
+      row: [
+        r.rank,
+        r.name ?? '—',
+        r.employeeId ?? '—',
+        Number(r.sValue ?? 0).toFixed(4),
+        formatVPercent(r.vValue ?? 0),
+        PERFORMANCE_META[category].label,
+      ],
+      category,
+      isBest: r.rank === 1,
+    };
   });
-}
-
-function addSummarySection(doc, startY, rows) {
-  autoTable(doc, {
-    startY,
-    theme: 'plain',
-    styles: { fontSize: 9, cellPadding: 1.5 },
-    columnStyles: {
-      0: { fontStyle: 'bold', cellWidth: 45 },
-      1: { cellWidth: 'auto' },
-    },
-    body: rows,
-    margin: { left: 14, right: 14 },
-  });
-
-  return doc.lastAutoTable.finalY;
 }
 
 function addRankingTable(doc, startY, results) {
+  const built = buildRankingRows(results);
+
   autoTable(doc, {
     startY,
-    head: [['Rank', 'Nama', 'ID Karyawan', 'Nilai S', 'Nilai V', 'Catatan']],
-    body: buildRankingRows(results),
+    head: [['#', 'Nama', 'ID Karyawan', 'Nilai S', 'Nilai V', 'Catatan']],
+    body: built.map((b) => b.row),
     theme: 'striped',
-    headStyles: { fillColor: [30, 64, 90], textColor: 255, fontStyle: 'bold' },
-    styles: { fontSize: 9, cellPadding: 2.5 },
+    headStyles: { fillColor: NAVY, textColor: 255, fontStyle: 'bold', fontSize: 9 },
+    styles: { fontSize: 9, cellPadding: 2.6, textColor: TEXT_DARK, lineColor: NAVY_LIGHT },
+    alternateRowStyles: { fillColor: [248, 250, 252] },
     columnStyles: {
-      0: { halign: 'center', cellWidth: 14 },
-      3: { halign: 'right' },
-      4: { halign: 'right' },
+      0: { halign: 'center', cellWidth: 12, fontStyle: 'bold' },
+      3: { halign: 'right', cellWidth: 26 },
+      4: { halign: 'right', cellWidth: 24, fontStyle: 'bold' },
+      5: { cellWidth: 30 },
     },
-    margin: { left: 14, right: 14 },
+    margin: { left: MARGIN, right: MARGIN },
     didParseCell: (data) => {
-      if (data.section === 'body' && data.row.index === 0) {
+      const entry = built[data.row.index];
+      if (!entry || data.section !== 'body') return;
+
+      if (entry.isBest) {
+        data.cell.styles.fillColor = GOLD_BG;
+        data.cell.styles.fontStyle = 'bold';
+      }
+      if (data.column.index === 5) {
+        data.cell.styles.textColor = NOTE_COLORS[entry.category];
         data.cell.styles.fontStyle = 'bold';
       }
     },
@@ -138,52 +235,51 @@ export function exportWPResultPDF({
   const doc = new jsPDF({ unit: 'mm', format: 'a4' });
 
   const subtitle =
-    source === 'history'
-      ? `Laporan Riwayat Hasil Penilaian — ${periodLabel}`
-      : `Laporan Hasil Penilaian (WP) — ${periodLabel}`;
+    source === 'history' ? 'Laporan Riwayat Hasil Penilaian' : 'Laporan Hasil Penilaian (WP)';
 
-  drawHeader(doc, subtitle);
+  drawHeader(doc, subtitle, periodLabel);
 
   const bestSales = results.find((r) => r.rank === 1) ?? null;
   const summaryRows = [
     ['Periode', `${periodLabel} (${period})`],
-    ['Metode', 'Weighted Product (WP), bobot dari AHP'],
+    ['Metode', 'Weighted Product (WP)'],
     ['Jumlah sales dinilai', String(results.length)],
     ['Sales terbaik', bestSales ? `${bestSales.name} (${bestSales.employeeId})` : '—'],
-    ['Nilai V sales terbaik', bestSales ? formatVPercent(bestSales.vValue) : '—'],
+    ['Nilai V terbaik', bestSales ? formatVPercent(bestSales.vValue) : '—'],
   ];
-  if (totalS !== undefined) summaryRows.push(['Total ΣS', Number(totalS).toFixed(6)]);
-  if (savedAt) {
-    summaryRows.push([
-      'Disimpan pada',
-      new Date(savedAt).toLocaleString('id-ID', {
-        day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit',
-      }),
-    ]);
-  }
+  if (totalS !== undefined) summaryRows.push(['Total ΣS', Number(totalS).toFixed(4)]);
+  if (savedAt) summaryRows.push(['Disimpan pada', formatDateTime(savedAt)]);
 
-  let y = 34;
-  doc.setFontSize(11);
-  doc.setFont('helvetica', 'bold');
-  doc.text('Ringkasan', 14, y);
-  y = addSummarySection(doc, y + 3, summaryRows) + 4;
+  let y = sectionTitle(doc, 40, 'Ringkasan');
+
+  const halfWidth = (CONTENT_WIDTH - 6) / 2;
+  const rightX = MARGIN + halfWidth + 6;
 
   if (ahpMeta) {
+    const leftFinalY = infoTable(doc, y, MARGIN, halfWidth, summaryRows);
+
     doc.setFont('helvetica', 'bold');
-    doc.text('Metadata Konsistensi AHP', 14, y);
-    y = addSummarySection(doc, y + 3, [
+    doc.setFontSize(9);
+    doc.setTextColor(...TEXT_MUTED);
+    doc.text('KONSISTENSI AHP', rightX, y - 2);
+    doc.setTextColor(...TEXT_DARK);
+
+    const rightFinalY = infoTable(doc, y, rightX, halfWidth, [
       ['λ max', Number(ahpMeta.lambda_max).toFixed(4)],
-      ['Consistency Index (CI)', Number(ahpMeta.ci).toFixed(4)],
-      ['Consistency Ratio (CR)', Number(ahpMeta.cr).toFixed(4)],
+      ['Consistency Index', Number(ahpMeta.ci).toFixed(4)],
+      ['Consistency Ratio', Number(ahpMeta.cr).toFixed(4)],
       ['Status', ahpMeta.is_consistent ? 'Konsisten (CR ≤ 0.1)' : 'Tidak konsisten (CR > 0.1)'],
-    ]) + 4;
+    ]);
+
+    y = Math.max(leftFinalY, rightFinalY) + 8;
+  } else {
+    y = infoTable(doc, y, MARGIN, CONTENT_WIDTH, summaryRows) + 8;
   }
 
   if (criteria?.length && normalizedWeights?.length) {
-    doc.setFont('helvetica', 'bold');
-    doc.text('Bobot Kriteria', 14, y);
+    y = sectionTitle(doc, y, 'Bobot Kriteria');
     autoTable(doc, {
-      startY: y + 3,
+      startY: y,
       head: [['Kriteria', 'Tipe', 'Bobot']],
       body: criteria.map((c, i) => [
         c.name ?? `Kriteria ${i + 1}`,
@@ -191,25 +287,27 @@ export function exportWPResultPDF({
         `${(normalizedWeights[i] * 100).toFixed(2)}%`,
       ]),
       theme: 'grid',
-      headStyles: { fillColor: [71, 85, 105], textColor: 255, fontStyle: 'bold' },
-      styles: { fontSize: 9, cellPadding: 2 },
-      margin: { left: 14, right: 14 },
+      headStyles: { fillColor: NAVY, textColor: 255, fontStyle: 'bold', fontSize: 9 },
+      styles: { fontSize: 9, cellPadding: 2.4, lineColor: NAVY_LIGHT, textColor: TEXT_DARK },
+      columnStyles: { 2: { halign: 'right' } },
+      margin: { left: MARGIN, right: MARGIN },
     });
-    y = doc.lastAutoTable.finalY + 4;
+    y = doc.lastAutoTable.finalY + 8;
   }
 
-  doc.setFont('helvetica', 'bold');
-  doc.text('Tabel Ranking Lengkap', 14, y);
-  addRankingTable(doc, y + 3, results);
+  y = sectionTitle(doc, y, 'Tabel Ranking Lengkap', 40);
+  const rankingEndY = addRankingTable(doc, y, results);
 
-  doc.setFontSize(8);
-  doc.setTextColor(120, 120, 120);
+  const noteY = ensureSpace(doc, rankingEndY + 5, 12);
+  doc.setFontSize(7.5);
+  doc.setFont('helvetica', 'italic');
+  doc.setTextColor(...TEXT_MUTED);
   doc.text(
     'Catatan performa dihitung otomatis: "Kurang Baik" jika V di bawah rata-rata, "Baik" jika V ≥ rata-rata, ' +
-    '"Sangat Baik" jika V ≥ rata-rata + standar deviasi seluruh peserta pada periode ini.',
-    14,
-    doc.lastAutoTable.finalY + 6,
-    { maxWidth: 182 }
+      '"Sangat Baik" jika V ≥ rata-rata + standar deviasi seluruh peserta pada periode ini.',
+    MARGIN,
+    noteY,
+    { maxWidth: CONTENT_WIDTH }
   );
 
   drawFooter(doc);
