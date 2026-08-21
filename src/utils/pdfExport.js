@@ -215,7 +215,6 @@ function addRankingTable(doc, startY, results) {
  * @param {string} params.periodLabel - Label periode (contoh: "Juni 2026")
  * @param {string} params.period - Periode mentah (contoh: "2026-06")
  * @param {{ id: string, name: string, employeeId: string, sValue: number, vValue: number, rank: number, isBest?: boolean }[]} params.results
- * @param {number} [params.totalS]
  * @param {{ name: string, type: 'benefit'|'cost' }[]} [params.criteria]
  * @param {number[]} [params.normalizedWeights]
  * @param {{ lambda_max: number, ci: number, cr: number, is_consistent: boolean }|null} [params.ahpMeta]
@@ -226,7 +225,6 @@ export function exportWPResultPDF({
   periodLabel,
   period,
   results,
-  totalS,
   criteria,
   normalizedWeights,
   ahpMeta,
@@ -248,7 +246,6 @@ export function exportWPResultPDF({
     ['Sales terbaik', bestSales ? `${bestSales.name} (${bestSales.employeeId})` : '—'],
     ['Nilai V terbaik', bestSales ? formatVPercent(bestSales.vValue) : '—'],
   ];
-  if (totalS !== undefined) summaryRows.push(['Total ΣS', Number(totalS).toFixed(4)]);
   if (savedAt) summaryRows.push(['Disimpan pada', formatDateTime(savedAt)]);
 
   let y = sectionTitle(doc, 40, 'Ringkasan');
@@ -285,7 +282,7 @@ export function exportWPResultPDF({
       body: criteria.map((c, i) => [
         c.name ?? `Kriteria ${i + 1}`,
         c.type === 'cost' ? 'Cost' : 'Benefit',
-        `${(normalizedWeights[i] * 100).toFixed(2)}%`,
+        Number(normalizedWeights[i]).toFixed(4),
       ]),
       theme: 'grid',
       headStyles: { fillColor: NAVY, textColor: 255, fontStyle: 'bold', fontSize: 9 },
@@ -297,19 +294,7 @@ export function exportWPResultPDF({
   }
 
   y = sectionTitle(doc, y, 'Tabel Ranking Lengkap', 40);
-  const rankingEndY = addRankingTable(doc, y, results);
-
-  const noteY = ensureSpace(doc, rankingEndY + 5, 12);
-  doc.setFontSize(7.5);
-  doc.setFont('helvetica', 'italic');
-  doc.setTextColor(...TEXT_MUTED);
-  doc.text(
-    'Catatan performa dihitung otomatis: "Kurang Baik" jika V di bawah rata-rata, "Baik" jika V ≥ rata-rata, ' +
-      '"Sangat Baik" jika V ≥ rata-rata + standar deviasi seluruh peserta pada periode ini.',
-    MARGIN,
-    noteY,
-    { maxWidth: CONTENT_WIDTH }
-  );
+  addRankingTable(doc, y, results);
 
   drawFooter(doc);
 

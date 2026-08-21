@@ -96,7 +96,6 @@ export default function WPResult() {
                 periodLabel: formatPeriodLabel(period),
                 period,
                 results: wpData.results,
-                totalS: wpData.totalS,
                 criteria: wpData.criteria,
                 normalizedWeights: wpData.normalizedWeights,
                 source: 'wp-result',
