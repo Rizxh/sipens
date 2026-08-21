@@ -24,16 +24,6 @@ const NOTE_COLORS = {
   sangat_baik: [180, 83, 9],
 };
 
-function formatNow() {
-  return new Date().toLocaleString('id-ID', {
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-  });
-}
-
 function formatDateTime(iso) {
   return new Date(iso).toLocaleString('id-ID', {
     day: 'numeric',
@@ -108,7 +98,6 @@ function drawFooter(doc) {
     doc.setFontSize(7.5);
     doc.setFont('helvetica', 'normal');
     doc.setTextColor(...TEXT_MUTED);
-    doc.text(`Dicetak: ${formatNow()}`, MARGIN, PAGE_HEIGHT - 8);
     doc.text(`Halaman ${i} dari ${pageCount}`, PAGE_WIDTH - MARGIN, PAGE_HEIGHT - 8, { align: 'right' });
   }
 }
