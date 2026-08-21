@@ -284,3 +284,31 @@ export function getPerformanceNote(vValue, allVValues) {
   const category = classifyPerformance(vValue, stats);
   return { category, ...PERFORMANCE_META[category] };
 }
+
+/**
+ * Klasifikasikan kualitas satu input nilai (skala 1–10) terhadap arah kriteria:
+ * benefit → makin besar makin baik, cost → makin kecil makin baik.
+ *
+ *  - Benefit: 1–3 Kurang Baik, 4–7 Baik, 8–10 Sangat Baik
+ *  - Cost:    8–10 Kurang Baik, 4–7 Baik, 1–3 Sangat Baik
+ *
+ * @param {number} value - nilai input 1–10
+ * @param {'benefit'|'cost'} type
+ * @returns {{ category: string, label: string, badgeVariant: string }|null}
+ */
+export function classifyScoreQuality(value, type) {
+  const v = Number(value);
+  if (Number.isNaN(v)) return null;
+
+  const isCost = type === 'cost';
+  const poor = isCost ? v >= 8 : v <= 3;
+  const excellent = isCost ? v <= 3 : v >= 8;
+
+  const category = poor
+    ? PERFORMANCE_CATEGORY.KURANG_BAIK
+    : excellent
+      ? PERFORMANCE_CATEGORY.SANGAT_BAIK
+      : PERFORMANCE_CATEGORY.BAIK;
+
+  return { category, ...PERFORMANCE_META[category] };
+}

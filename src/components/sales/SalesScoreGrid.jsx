@@ -1,3 +1,11 @@
+import { classifyScoreQuality } from '../../utils/wp';
+
+const QUALITY_TEXT_COLOR = {
+  poor: 'text-red-600',
+  good: 'text-blue-600',
+  excellent: 'text-amber-600',
+};
+
 const AVATAR_COLORS = [
   'bg-violet-500', 'bg-blue-500', 'bg-teal-500', 'bg-emerald-500',
   'bg-amber-500', 'bg-rose-500', 'bg-pink-500', 'bg-indigo-500',
@@ -94,6 +102,7 @@ export default function SalesScoreGrid({ sales, criteria, scores, onChange, disa
                   const filled = value !== '' && !invalid;
                   const isCost = c.type === 'cost';
                   const isLastCol = colIdx === criteria.length - 1;
+                  const quality = filled ? classifyScoreQuality(num, c.type) : null;
 
                   return (
                     <td
@@ -103,7 +112,7 @@ export default function SalesScoreGrid({ sales, criteria, scores, onChange, disa
                         isLast && isLastCol ? 'rounded-br-xl' : '',
                       ].join(' ')}
                     >
-                      <div className="relative">
+                      <div className="flex flex-col items-center gap-1">
                         <input
                           type="number"
                           min="1"
@@ -127,11 +136,12 @@ export default function SalesScoreGrid({ sales, criteria, scores, onChange, disa
                           ].join(' ')}
                           aria-label={`Nilai ${s.name} untuk ${c.name}`}
                         />
-                        {invalid && (
-                          <p className="absolute -bottom-4 left-0 right-0 text-center text-[10px] text-red-500">
-                            harus 1–10
-                          </p>
-                        )}
+                        <p className={[
+                          'h-3.5 leading-none text-center text-[10px] font-semibold',
+                          invalid ? 'text-red-500' : quality ? QUALITY_TEXT_COLOR[quality.badgeVariant] : '',
+                        ].join(' ')}>
+                          {invalid ? 'harus 1–10' : quality?.label}
+                        </p>
                       </div>
                     </td>
                   );
