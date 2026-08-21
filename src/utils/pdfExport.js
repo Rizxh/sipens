@@ -24,6 +24,12 @@ const NOTE_COLORS = {
   sangat_baik: [180, 83, 9],
 };
 
+/** Format angka dengan aman; kembalikan '—' kalau nilainya kosong/bukan angka. */
+function fmtNum(value, decimals = 4) {
+  const n = Number(value);
+  return value === null || value === undefined || Number.isNaN(n) ? '—' : n.toFixed(decimals);
+}
+
 function formatDateTime(iso) {
   return new Date(iso).toLocaleString('id-ID', {
     day: 'numeric',
@@ -178,7 +184,8 @@ function addRankingTable(doc, startY, results) {
       4: { halign: 'right', cellWidth: 24, fontStyle: 'bold' },
       5: { cellWidth: 30 },
     },
-    margin: { left: MARGIN, right: MARGIN },
+    margin: { left: MARGIN, right: MARGIN, top: 20, bottom: 18 },
+    showHead: 'everyPage',
     didParseCell: (data) => {
       const entry = built[data.row.index];
       if (!entry || data.section !== 'body') return;
@@ -238,26 +245,26 @@ export function exportWPResultPDF({
   const halfWidth = (CONTENT_WIDTH - 6) / 2;
   const rightX = MARGIN + halfWidth + 6;
 
-  if (ahpMeta) {
-    const leftFinalY = infoTable(doc, y, MARGIN, halfWidth, summaryRows);
+  const leftFinalY = infoTable(doc, y, MARGIN, halfWidth, summaryRows);
 
-    doc.setFont('helvetica', 'bold');
-    doc.setFontSize(9);
-    doc.setTextColor(...TEXT_MUTED);
-    doc.text('KONSISTENSI AHP', rightX, y - 2);
-    doc.setTextColor(...TEXT_DARK);
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(9);
+  doc.setTextColor(...TEXT_MUTED);
+  doc.text('KONSISTENSI AHP', rightX, y - 2);
+  doc.setTextColor(...TEXT_DARK);
 
-    const rightFinalY = infoTable(doc, y, rightX, halfWidth, [
-      ['λ max', Number(ahpMeta.lambda_max).toFixed(4)],
-      ['Consistency Index', Number(ahpMeta.ci).toFixed(4)],
-      ['Consistency Ratio', Number(ahpMeta.cr).toFixed(4)],
-      ['Status', ahpMeta.is_consistent ? 'Konsisten (CR ≤ 0.1)' : 'Tidak konsisten (CR > 0.1)'],
-    ]);
+  const ahpRows = ahpMeta
+    ? [
+        ['λ max', fmtNum(ahpMeta.lambda_max)],
+        ['Consistency Index', fmtNum(ahpMeta.ci)],
+        ['Consistency Ratio', fmtNum(ahpMeta.cr)],
+        ['Status', ahpMeta.is_consistent ? 'Konsisten (CR ≤ 0.1)' : 'Tidak konsisten (CR > 0.1)'],
+      ]
+    : [['Status', 'Tidak tersedia untuk periode ini']];
 
-    y = Math.max(leftFinalY, rightFinalY) + 8;
-  } else {
-    y = infoTable(doc, y, MARGIN, CONTENT_WIDTH, summaryRows) + 8;
-  }
+  const rightFinalY = infoTable(doc, y, rightX, halfWidth, ahpRows);
+
+  y = Math.max(leftFinalY, rightFinalY) + 8;
 
   y = sectionTitle(doc, y, 'Tabel Ranking Lengkap', 40);
   addRankingTable(doc, y, results);
