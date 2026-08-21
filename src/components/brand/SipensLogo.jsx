@@ -1,8 +1,10 @@
+import { APP_NAME } from '../../config/app';
+
 /**
  * Logo mark SIPENS — grafik penilaian naik + bintang nominasi sales terbaik.
  * Gunakan currentColor agar menyesuaikan konteks (sidebar gelap, login terang).
  */
-export default function SipensLogo({ className = 'w-6 h-6', title = 'SIPENS', ...props }) {
+export default function SipensLogo({ className = 'w-6 h-6', title = APP_NAME, ...props }) {
   return (
     <svg
       viewBox="0 0 24 24"

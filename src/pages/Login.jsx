@@ -6,6 +6,7 @@ import Alert from '../components/ui/Alert';
 import Button from '../components/ui/Button';
 import Input from '../components/ui/Input';
 import LoadingSpinner from '../components/ui/LoadingSpinner';
+import { APP_NAME, APP_TAGLINE } from '../config/app';
 
 const MODES = {
   signin: { submit: 'Masuk' },
@@ -123,10 +124,10 @@ export default function Login() {
             </div>
             <div className="min-w-0">
               <h1 className="text-lg font-bold text-slate-900 tracking-tight leading-tight">
-                SIPENS  
+                {APP_NAME}
               </h1>
               <p className="text-slate-500 text-sm leading-snug truncate">
-                Penilaian & Nominasi Sales Terbaik
+                {APP_TAGLINE}
               </p>
             </div>
           </div>

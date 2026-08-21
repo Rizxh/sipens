@@ -5,6 +5,7 @@
 import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { calculateVStats, classifyPerformance, formatVPercent, PERFORMANCE_META } from './wp';
+import { APP_NAME, APP_TAGLINE } from '../config/app';
 
 const PAGE_WIDTH = 210;
 const PAGE_HEIGHT = 297;
@@ -59,11 +60,11 @@ function drawHeader(doc, subtitle, periodLabel) {
   doc.setTextColor(255, 255, 255);
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(17);
-  doc.text('SIPENS', MARGIN, 13);
+  doc.text(APP_NAME, MARGIN, 13);
 
   doc.setFont('helvetica', 'normal');
   doc.setFontSize(8.5);
-  doc.text('Sistem Pendukung Keputusan Penilaian Sales Terbaik', MARGIN, 19);
+  doc.text(APP_TAGLINE, MARGIN, 19);
 
   doc.setDrawColor(255, 255, 255);
   doc.setLineWidth(0.2);
@@ -86,7 +87,7 @@ function drawContinuationHeader(doc) {
   doc.setFontSize(8);
   doc.setFont('helvetica', 'bold');
   doc.setTextColor(...NAVY);
-  doc.text('SIPENS', MARGIN, 12);
+  doc.text(APP_NAME, MARGIN, 12);
   doc.setDrawColor(...NAVY_LIGHT);
   doc.setLineWidth(0.2);
   doc.line(MARGIN, 15, PAGE_WIDTH - MARGIN, 15);
@@ -312,6 +313,7 @@ export function exportWPResultPDF({
 
   drawFooter(doc);
 
-  const fileName = `SIPENS-Laporan-${source === 'history' ? 'Riwayat' : 'Hasil'}-${period}.pdf`;
+  const safeAppName = APP_NAME.replace(/\s+/g, '-');
+  const fileName = `${safeAppName}-Laporan-${source === 'history' ? 'Riwayat' : 'Hasil'}-${period}.pdf`;
   doc.save(fileName);
 }

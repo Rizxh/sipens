@@ -8,6 +8,7 @@ import Button from '../components/ui/Button';
 import Card from '../components/ui/Card';
 import LoadingSpinner from '../components/ui/LoadingSpinner';
 import PageHeader from '../components/ui/PageHeader';
+import { APP_NAME } from '../config/app';
 
 const quickActions = [
   {
@@ -49,7 +50,7 @@ const quickActions = [
   {
     to: '/tutorial',
     title: 'Tutorial',
-    description: 'Panduan cara pakai SIPENS',
+    description: `Panduan cara pakai ${APP_NAME}`,
     icon: 'tutorial',
     gradient: 'from-rose-500 to-pink-600',
     light: 'bg-rose-50 border-rose-200',

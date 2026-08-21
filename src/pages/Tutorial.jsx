@@ -3,9 +3,10 @@ import { Link } from 'react-router-dom';
 import { Icon } from '../components/icons';
 import Card from '../components/ui/Card';
 import PageHeader from '../components/ui/PageHeader';
+import { APP_NAME } from '../config/app';
 
 const STEPS = [
-  { id: 1, icon: 'dashboard', color: 'blue',   title: 'Apa itu SIPENS?',              emoji: '🏆', short: 'Pengenalan' },
+  { id: 1, icon: 'dashboard', color: 'blue',   title: `Apa itu ${APP_NAME}?`,              emoji: '🏆', short: 'Pengenalan' },
   { id: 2, icon: 'criteria', color: 'purple',  title: 'Langkah 1 — Kelola Kriteria', emoji: '📋', short: 'Kriteria'   },
   { id: 3, icon: 'ahp',      color: 'indigo',  title: 'Langkah 2 — Isi Bobot AHP',   emoji: '⚖️', short: 'AHP'        },
   { id: 4, icon: 'sales',    color: 'teal',    title: 'Langkah 3 — Input Nilai Sales',emoji: '📝', short: 'Nilai'      },
@@ -38,18 +39,18 @@ function StepContent({ step }) {
 function Step1({ c }) {
   return (
     <div className="space-y-6">
-      <Callout color={c} emoji="👋" title="Halo! Selamat datang di SIPENS">
-        SIPENS adalah sistem yang membantu kamu memilih <strong>siapa sales terbaik bulan ini</strong> secara adil dan otomatis — bukan pakai perasaan, tapi pakai <strong>rumus matematika</strong>.
+      <Callout color={c} emoji="👋" title={`Halo! Selamat datang di ${APP_NAME}`}>
+        {APP_NAME} adalah sistem yang membantu kamu memilih <strong>siapa sales terbaik bulan ini</strong> secara adil dan otomatis — bukan pakai perasaan, tapi pakai <strong>rumus matematika</strong>.
       </Callout>
 
       <div className="grid sm:grid-cols-2 gap-4">
         <InfoCard emoji="🤔" title="Masalahnya apa?" color={c}
           desc="Kalau ada 10 sales, susah banget menentukan siapa yang terbaik. Semua punya kelebihan masing-masing. Ada yang omsetnya tinggi, ada yang pelanggannya banyak, ada yang biayanya rendah." />
         <InfoCard emoji="✅" title="Solusinya?" color={c}
-          desc="SIPENS pakai 2 metode ilmiah: AHP untuk menentukan seberapa penting tiap kriteria, dan WP untuk menghitung skor setiap sales secara otomatis." />
+          desc={`${APP_NAME} pakai 2 metode ilmiah: AHP untuk menentukan seberapa penting tiap kriteria, dan WP untuk menghitung skor setiap sales secara otomatis.`} />
       </div>
 
-      <h3 className="text-base font-bold text-slate-800 mt-2">Alur kerja SIPENS — 5 langkah mudah:</h3>
+      <h3 className="text-base font-bold text-slate-800 mt-2">Alur kerja {APP_NAME} — 5 langkah mudah:</h3>
       <div className="grid grid-cols-1 sm:grid-cols-5 gap-3">
         {[
           { n: 1, label: 'Tentukan Kriteria', icon: '📋', desc: 'Apa saja yang mau dinilai?' },
@@ -83,7 +84,7 @@ function Step2({ c }) {
   return (
     <div className="space-y-6">
       <Callout color={c} emoji="📋" title="Kriteria = hal yang dinilai dari sales">
-        Kriteria adalah <strong>aspek penilaian</strong> yang kamu gunakan untuk menilai performa sales. Di SIPENS sudah ada 3 kriteria default.
+        Kriteria adalah <strong>aspek penilaian</strong> yang kamu gunakan untuk menilai performa sales. Di {APP_NAME} sudah ada 3 kriteria default.
       </Callout>
 
       <h3 className="text-base font-bold text-slate-800">3 Kriteria yang digunakan:</h3>
@@ -129,7 +130,7 @@ function Step3({ c }) {
   return (
     <div className="space-y-6">
       <Callout color={c} emoji="⚖️" title="AHP = sistem untuk menentukan seberapa penting tiap kriteria">
-        Bayangkan kamu punya 3 bahan masakan. AHP membantu kamu menentukan: <em>bahan mana yang paling penting untuk rasa masakan?</em> Begitu juga di SIPENS — AHP menentukan <strong>bobot (seberapa penting)</strong> tiap kriteria.
+        Bayangkan kamu punya 3 bahan masakan. AHP membantu kamu menentukan: <em>bahan mana yang paling penting untuk rasa masakan?</em> Begitu juga di {APP_NAME} — AHP menentukan <strong>bobot (seberapa penting)</strong> tiap kriteria.
       </Callout>
 
       <h3 className="text-base font-bold text-slate-800">Cara kerja AHP — 4 langkah aplikasi:</h3>
@@ -272,7 +273,7 @@ function Step3({ c }) {
         </div>
       </div>
 
-      <Callout color={c} emoji="🎯" title="Bobot akhir SIPENS (hasil AHP di atas):">
+      <Callout color={c} emoji="🎯" title={`Bobot akhir ${APP_NAME} (hasil AHP di atas):`}>
         <ul className="mt-1 space-y-1 text-sm">
           <li><strong>Target Omset = 63.3%</strong> — paling penting karena langsung berpengaruh ke pendapatan</li>
           <li><strong>Pelanggan Baru = 26.0%</strong> — penting untuk pertumbuhan bisnis</li>
@@ -547,7 +548,7 @@ function Step6({ c }) {
         </Link>
       </div>
 
-      <Callout color={c} emoji="🎉" title="Selesai! Kamu sudah paham cara kerja SIPENS.">
+      <Callout color={c} emoji="🎉" title={`Selesai! Kamu sudah paham cara kerja ${APP_NAME}.`}>
         Ingat urutannya: <strong>Kriteria → AHP → Input Nilai (1–10) → Hasil WP → Simpan → Riwayat</strong>. Ulangi setiap bulan untuk menentukan sales terbaik secara konsisten dan adil!
       </Callout>
     </div>
@@ -607,7 +608,7 @@ export default function Tutorial() {
     <div className="space-y-5 sm:space-y-6">
       <PageHeader
         title="Tutorial"
-        description="Panduan lengkap SIPENS — termasuk rumus AHP & WP dengan contoh perhitungan!"
+        description={`Panduan lengkap ${APP_NAME} — termasuk rumus AHP & WP dengan contoh perhitungan!`}
       />
 
       {/* Progress bar */}
@@ -661,7 +662,7 @@ export default function Tutorial() {
           <span className="text-xs text-slate-400 font-medium">{active + 1} / {STEPS.length}</span>
           {isLast ? (
             <Link to="/dashboard" className="flex items-center gap-2 rounded-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-700 transition-colors">
-              Mulai pakai SIPENS 🚀
+              Mulai pakai {APP_NAME} 🚀
             </Link>
           ) : (
             <button

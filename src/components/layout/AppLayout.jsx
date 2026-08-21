@@ -3,6 +3,7 @@ import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { Icon, navItems } from '../icons';
 import Button from '../ui/Button';
+import { APP_NAME, APP_TAGLINE } from '../../config/app';
 
 function navLinkClass(isActive, compact = false) {
   return [
@@ -70,10 +71,10 @@ export default function Sidebar() {
       <div className="px-3 lg:px-6 py-4 lg:py-5 border-b border-brand-800">
         <div className="flex items-center justify-center lg:justify-start gap-2">
           <Icon name="logo" className="w-6 h-6 text-brand-200 shrink-0" />
-          <h1 className="hidden lg:block text-xl font-bold tracking-tight">SIPENS</h1>
+          <h1 className="hidden lg:block text-xl font-bold tracking-tight">{APP_NAME}</h1>
         </div>
         <p className="hidden lg:block text-brand-200 text-sm mt-1.5 leading-snug">
-          Penilaian &amp; Nominasi Sales Terbaik
+          {APP_TAGLINE}
         </p>
       </div>
 
@@ -149,7 +150,7 @@ function MobileDrawer({ open, onClose }) {
           <div className="flex items-center gap-2 min-w-0">
             <Icon name="logo" className="w-6 h-6 text-brand-200 shrink-0" />
             <div className="min-w-0">
-              <p className="font-bold">SIPENS</p>
+              <p className="font-bold">{APP_NAME}</p>
               <p className="text-xs text-brand-300 truncate">{profile?.email}</p>
             </div>
           </div>
@@ -234,7 +235,7 @@ export function MobileHeader({ onMenuOpen }) {
       <div className="flex items-center gap-2 min-w-0 flex-1">
         <Icon name="logo" className="w-5 h-5 text-brand-200 shrink-0" />
         <div className="min-w-0">
-          <p className="font-bold leading-tight">SIPENS</p>
+          <p className="font-bold leading-tight">{APP_NAME}</p>
           <p className="text-xs text-brand-200 truncate">
             {currentPage?.label ?? 'Dashboard'}
           </p>
