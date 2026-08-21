@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { Icon } from '../icons';
 import Badge from '../ui/Badge';
 import PaginationBar, { usePagination } from '../ui/PaginationBar';
-import { formatVPercent } from '../../utils/wp';
+import { calculateVStats, classifyPerformance, formatVPercent, PERFORMANCE_META } from '../../utils/wp';
 
 const PAGE_SIZE = 10;
 
@@ -12,6 +12,11 @@ export default function WPRankingTable({ results, title = 'Tabel Ranking' }) {
   const sorted = useMemo(
     () => [...(results ?? [])].sort((a, b) => a.rank - b.rank),
     [results]
+  );
+
+  const vStats = useMemo(
+    () => calculateVStats(sorted.map((r) => r.vValue)),
+    [sorted]
   );
 
   const { totalItems, totalPages } = usePagination(sorted, PAGE_SIZE);
@@ -62,10 +67,15 @@ export default function WPRankingTable({ results, title = 'Tabel Ranking' }) {
               <th className="px-3 sm:px-4 py-3 font-semibold text-slate-700 text-right hidden md:table-cell">S</th>
               <th className="px-3 sm:px-4 py-3 font-semibold text-slate-700 text-right">V</th>
               <th className="px-3 sm:px-4 py-3 font-semibold text-slate-700 hidden sm:table-cell w-24">Status</th>
+              <th className="px-3 sm:px-4 py-3 font-semibold text-slate-700 w-28">Catatan</th>
             </tr>
           </thead>
           <tbody>
-            {pageRows.map((row) => (
+            {pageRows.map((row) => {
+              const category = classifyPerformance(row.vValue, vStats);
+              const note = PERFORMANCE_META[category];
+
+              return (
               <tr
                 key={row.id ?? row.salesId ?? `${row.employeeId}-${row.rank}`}
                 className={[
@@ -114,8 +124,12 @@ export default function WPRankingTable({ results, title = 'Tabel Ranking' }) {
                     <span className="text-slate-400">—</span>
                   )}
                 </td>
+                <td className="px-3 sm:px-4 py-3">
+                  <Badge variant={note.badgeVariant}>{note.label}</Badge>
+                </td>
               </tr>
-            ))}
+              );
+            })}
           </tbody>
         </table>
       </div>
@@ -127,6 +141,19 @@ export default function WPRankingTable({ results, title = 'Tabel Ranking' }) {
             Sales terbaik ada di halaman ini
           </p>
         )}
+      </div>
+
+      <div className="px-4 sm:px-5 py-3 border-t border-slate-100 text-xs text-slate-500 flex flex-wrap items-center gap-x-4 gap-y-1">
+        <span className="font-medium text-slate-600">Catatan:</span>
+        <span className="inline-flex items-center gap-1.5">
+          <Badge variant="poor">Kurang Baik</Badge> V di bawah rata-rata
+        </span>
+        <span className="inline-flex items-center gap-1.5">
+          <Badge variant="good">Baik</Badge> V ≥ rata-rata
+        </span>
+        <span className="inline-flex items-center gap-1.5">
+          <Badge variant="excellent">Sangat Baik</Badge> V ≥ rata-rata + std. deviasi
+        </span>
       </div>
     </div>
   );

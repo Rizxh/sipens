@@ -13,6 +13,7 @@ import Modal, { ModalFooter } from '../components/ui/Modal';
 import { useHistory } from '../hooks/useHistory';
 import { formatPeriodLabel } from '../lib/supabase';
 import { formatVPercent } from '../utils/wp';
+import { exportWPResultPDF } from '../utils/pdfExport';
 
 export default function History() {
   const {
@@ -240,9 +241,29 @@ function PeriodDetail({ data, ahpMeta, detailLoading, onDelete }) {
               {data.participantCount} sales dinilai · disimpan {formatDateTime(data.savedAt)}
             </p>
           </div>
-          <Button variant="danger" size="sm" onClick={onDelete} className="w-full sm:w-auto shrink-0">
-            Hapus Riwayat
-          </Button>
+          <div className="flex gap-2 w-full sm:w-auto shrink-0">
+            <Button
+              variant="secondary"
+              size="sm"
+              onClick={() =>
+                exportWPResultPDF({
+                  periodLabel: data.periodLabel,
+                  period: data.period,
+                  results: data.results,
+                  ahpMeta,
+                  savedAt: data.savedAt,
+                  source: 'history',
+                })
+              }
+              className="flex-1 sm:flex-none"
+            >
+              <Icon name="download" className="w-4 h-4" />
+              Ekspor PDF
+            </Button>
+            <Button variant="danger" size="sm" onClick={onDelete} className="flex-1 sm:flex-none">
+              Hapus Riwayat
+            </Button>
+          </div>
         </div>
 
         {data.bestSales && (

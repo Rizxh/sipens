@@ -11,6 +11,7 @@ import Tooltip from '../components/ui/Tooltip';
 import { useWPResult } from '../hooks/useWPResult';
 import { formatPeriodLabel } from '../lib/supabase';
 import { formatVPercent } from '../utils/wp';
+import { exportWPResultPDF } from '../utils/pdfExport';
 
 export default function WPResult() {
   const {
@@ -85,6 +86,26 @@ export default function WPResult() {
           </div>
           <Button variant="secondary" size="sm" onClick={loadAndCompute} className="w-full sm:w-auto">
             Hitung Ulang
+          </Button>
+          <Button
+            variant="secondary"
+            size="sm"
+            disabled={!wpData}
+            onClick={() =>
+              exportWPResultPDF({
+                periodLabel: formatPeriodLabel(period),
+                period,
+                results: wpData.results,
+                totalS: wpData.totalS,
+                criteria: wpData.criteria,
+                normalizedWeights: wpData.normalizedWeights,
+                source: 'wp-result',
+              })
+            }
+            className="w-full sm:w-auto"
+          >
+            <Icon name="download" className="w-4 h-4" />
+            Ekspor PDF
           </Button>
           <Button
             onClick={handleSave}

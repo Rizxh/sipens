@@ -1,0 +1,479 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<title>Peta File SIPENS</title>
+<style>
+  @page { size: A4; margin: 14mm 13mm 16mm 13mm; }
+
+  * { box-sizing: border-box; }
+  html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  body {
+    margin: 0;
+    font-family: "Segoe UI", ui-sans-serif, system-ui, Arial, sans-serif;
+    color: #0f172a;
+    font-size: 9.6pt;
+    line-height: 1.5;
+  }
+  code, .mono { font-family: "Cascadia Mono", Consolas, "Courier New", monospace; }
+
+  /* ---------- cover ---------- */
+  .cover {
+    height: 252mm;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background: linear-gradient(160deg, #1e3a8a 0%, #1d4ed8 55%, #2563eb 100%);
+    color: #fff;
+    border-radius: 6px;
+    padding: 22mm 18mm;
+    page-break-after: always;
+  }
+  .cover .kicker { font-size: 10pt; letter-spacing: .22em; text-transform: uppercase; color: #bfdbfe; }
+  .cover h1 { font-size: 34pt; margin: 6mm 0 2mm; line-height: 1.08; font-weight: 800; letter-spacing: -.5pt; }
+  .cover h2 { font-size: 13pt; font-weight: 500; color: #dbeafe; margin: 0 0 12mm; }
+  .cover .rule { width: 34mm; height: 3px; background: #93c5fd; border-radius: 2px; margin-bottom: 10mm; }
+  .cover ul { list-style: none; padding: 0; margin: 0; columns: 2; column-gap: 14mm; }
+  .cover li { padding: 1.6mm 0; color: #e0edff; font-size: 10pt; break-inside: avoid; }
+  .cover li b { color: #fff; }
+  .cover .foot { margin-top: 14mm; font-size: 9pt; color: #bfdbfe; }
+
+  /* ---------- headings ---------- */
+  h2.sec {
+    font-size: 15pt; margin: 0 0 4mm; padding-bottom: 2.5mm;
+    border-bottom: 2.5px solid #1d4ed8; color: #1e3a8a; letter-spacing: -.2pt;
+  }
+  h2.sec .num {
+    display: inline-block; background: #1d4ed8; color: #fff; font-size: 9.5pt;
+    width: 7.5mm; height: 7.5mm; line-height: 7.5mm; text-align: center;
+    border-radius: 4px; margin-right: 3mm; vertical-align: 2px;
+  }
+  h3.sub { font-size: 11pt; color: #1e3a8a; margin: 6mm 0 2.5mm; }
+  .section { page-break-inside: auto; margin-bottom: 9mm; }
+  .newpage { page-break-before: always; }
+  p.lead { margin: 0 0 4mm; color: #475569; }
+
+  /* ---------- tables ---------- */
+  table { width: 100%; border-collapse: collapse; margin: 0 0 4mm; font-size: 8.8pt; }
+  th {
+    background: #1e3a8a; color: #fff; text-align: left; font-weight: 600;
+    padding: 2mm 2.5mm; font-size: 8.4pt; letter-spacing: .04em; text-transform: uppercase;
+  }
+  td { padding: 2mm 2.5mm; border-bottom: 1px solid #e2e8f0; vertical-align: top; }
+  tr:nth-child(even) td { background: #f8fafc; }
+  tr { page-break-inside: avoid; }
+  td.path { font-family: "Cascadia Mono", Consolas, monospace; font-size: 8.2pt; color: #1d4ed8; white-space: nowrap; }
+  td.n { text-align: right; color: #64748b; white-space: nowrap; }
+  .tag {
+    display: inline-block; background: #dbeafe; color: #1e40af; border-radius: 3px;
+    padding: .5mm 1.6mm; font-size: 7.6pt; font-family: Consolas, monospace; margin: .3mm .6mm .3mm 0;
+  }
+  .tag.green { background: #dcfce7; color: #166534; }
+  .tag.amber { background: #fef3c7; color: #92400e; }
+
+  /* ---------- tree ---------- */
+  pre.tree {
+    font-family: "Cascadia Mono", Consolas, monospace; font-size: 8pt; line-height: 1.45;
+    background: #f8fafc; border: 1px solid #e2e8f0; border-left: 3px solid #1d4ed8;
+    border-radius: 4px; padding: 4mm 5mm; margin: 0 0 4mm; white-space: pre; overflow: hidden;
+  }
+  pre.tree b { color: #1e3a8a; }
+  pre.tree i { color: #64748b; font-style: normal; }
+
+  /* ---------- callout ---------- */
+  .note {
+    background: #eff6ff; border-left: 3px solid #2563eb; border-radius: 4px;
+    padding: 3mm 4mm; margin: 0 0 4mm; font-size: 8.8pt; color: #1e3a8a;
+  }
+  .note b { color: #1e3a8a; }
+  .note.amber { background: #fffbeb; border-left-color: #d97706; color: #78350f; }
+
+  /* ---------- page cards ---------- */
+  .pagecard {
+    border: 1px solid #e2e8f0; border-radius: 5px; margin-bottom: 3.5mm;
+    page-break-inside: avoid; overflow: hidden;
+  }
+  .pagecard .head {
+    background: #f1f5f9; border-bottom: 1px solid #e2e8f0; padding: 2mm 3mm;
+    display: flex; justify-content: space-between; align-items: baseline;
+  }
+  .pagecard .head .t { font-weight: 700; color: #1e3a8a; font-size: 10pt; }
+  .pagecard .head .r { font-family: Consolas, monospace; font-size: 8.4pt; color: #2563eb; }
+  .pagecard .body { padding: 2.5mm 3mm; }
+  .pagecard .body .row { display: flex; gap: 2mm; margin-bottom: 1.4mm; font-size: 8.6pt; }
+  .pagecard .body .row .k { width: 22mm; color: #64748b; flex: none; }
+  .pagecard .body .row .v { flex: 1; }
+  .pagecard .body .v code { font-size: 8.2pt; color: #0f172a; }
+
+  .two { display: flex; gap: 5mm; }
+  .two > div { flex: 1; min-width: 0; }
+</style>
+</head>
+<body>
+
+<!-- ================= COVER ================= -->
+<div class="cover">
+  <div class="kicker">Dokumentasi Struktur Proyek</div>
+  <h1>Peta File<br>SIPENS</h1>
+  <h2>Sistem Pendukung Keputusan Penilaian Sales Terbaik &mdash; AHP &amp; Weighted Product</h2>
+  <div class="rule"></div>
+  <ul>
+    <li><b>Frontend</b> &middot; React 19 + Vite 8</li>
+    <li><b>Styling</b> &middot; Tailwind CSS v4</li>
+    <li><b>Routing</b> &middot; React Router v7</li>
+    <li><b>Backend</b> &middot; Supabase (Postgres + Auth)</li>
+    <li><b>Chart</b> &middot; Recharts</li>
+    <li><b>Deploy</b> &middot; Vercel</li>
+    <li><b>Total file src</b> &middot; 47 file</li>
+    <li><b>Total baris src</b> &middot; ± 7.400 baris</li>
+  </ul>
+  <div class="foot">Root proyek: <span class="mono">C:\Portofolio\sipens</span> &nbsp;&middot;&nbsp; Dibuat 17 Agustus 2026</div>
+</div>
+
+<!-- ================= 1. TREE ================= -->
+<div class="section">
+  <h2 class="sec"><span class="num">1</span>Struktur Folder</h2>
+  <p class="lead">Gambaran menyeluruh isi proyek. Semua kode aplikasi ada di <code>src/</code>; file SQL &amp; konfigurasi ada di root.</p>
+<pre class="tree">
+sipens/
+├─ <b>index.html</b>                  <i>HTML shell Vite (div#root)</i>
+├─ <b>vite.config.js</b>              <i>plugin react + tailwind v4</i>
+├─ <b>vercel.json</b>                 <i>rewrite SPA → /index.html</i>
+├─ <b>.env</b> / .env.example         <i>VITE_SUPABASE_URL &amp; ANON_KEY</i>
+├─ <b>schema.sql</b>                  <i>7 tabel + RLS policy</i>
+├─ fix-rls-recursion.sql          <i>patch policy RLS</i>
+├─ seed-demo / 10 / 30 / 100-sales.sql
+├─ scripts/                       <i>node script (admin, seed, verifikasi)</i>
+└─ <b>src/</b>
+   ├─ <b>main.jsx</b>                 <i>entry point React</i>
+   ├─ <b>App.jsx</b>                  <i>ROUTING semua halaman</i>
+   ├─ <b>index.css</b>                <i>tema warna brand-50..900</i>
+   ├─ <b>lib/supabase.js</b>          <i>client Supabase + helper periode</i>
+   ├─ <b>context/AuthContext.jsx</b>  <i>login / logout / profil admin</i>
+   ├─ <b>pages/</b>                   <i>9 halaman</i>
+   ├─ <b>components/</b>
+   │  ├─ <b>layout/AppLayout.jsx</b>  <i>SIDEBAR + NAVBAR + drawer + bottom nav</i>
+   │  ├─ <b>icons/index.jsx</b>       <i>daftar menu (navItems) + ikon</i>
+   │  ├─ ui/                      <i>11 komponen reusable</i>
+   │  ├─ ahp/ · wp/ · sales/      <i>komponen per fitur</i>
+   │  ├─ brand/SipensLogo.jsx
+   │  ├─ ProtectedRoute.jsx       <i>penjaga halaman (wajib login admin)</i>
+   │  └─ ConfigMissing.jsx        <i>layar kalau .env kosong</i>
+   ├─ <b>hooks/</b>                   <i>7 hook: ambil &amp; simpan data Supabase</i>
+   └─ <b>utils/</b>                   <i>ahp.js &amp; wp.js — rumus perhitungan</i>
+</pre>
+</div>
+
+<!-- ================= 2. ENTRY & ROUTING ================= -->
+<div class="section">
+  <h2 class="sec"><span class="num">2</span>Entry Point &amp; Routing</h2>
+  <table>
+    <tr><th style="width:52mm">File</th><th>Isi &amp; tanggung jawab</th><th class="n" style="width:14mm">Baris</th></tr>
+    <tr><td class="path">index.html</td><td>Shell HTML, memuat <code>&lt;div id="root"&gt;</code> dan <code>/src/main.jsx</code>.</td><td class="n">18</td></tr>
+    <tr><td class="path">src/main.jsx</td><td>Mount React ke <code>#root</code>, bungkus <code>&lt;StrictMode&gt;</code>, import <code>index.css</code>.</td><td class="n">10</td></tr>
+    <tr><td class="path">src/App.jsx</td><td><b>Pusat routing.</b> <code>BrowserRouter → AuthProvider → Routes</code>. Cek <code>isSupabaseConfigured</code> dulu; kalau env kosong tampilkan <code>ConfigMissing</code>.</td><td class="n">46</td></tr>
+    <tr><td class="path">src/index.css</td><td>Import Tailwind v4 + blok <code>@theme</code> berisi palet <code>--color-brand-50 … 900</code> (biru <code>#1e3a8a</code> → <code>#eff6ff</code>). Ubah warna aplikasi dari sini.</td><td class="n">—</td></tr>
+  </table>
+
+  <h3 class="sub">Peta rute (src/App.jsx:26–41)</h3>
+  <table>
+    <tr><th style="width:30mm">Path</th><th style="width:48mm">Komponen</th><th>Keterangan</th></tr>
+    <tr><td class="path">/login</td><td class="path">pages/Login.jsx</td><td>Publik — di luar layout.</td></tr>
+    <tr><td class="path">/</td><td>—</td><td>Redirect otomatis ke <code>/dashboard</code>.</td></tr>
+    <tr><td class="path">/dashboard</td><td class="path">pages/Dashboard.jsx</td><td rowspan="7" style="vertical-align:middle">Semua rute ini dibungkus<br><code>&lt;ProtectedRoute&gt;</code> → <code>&lt;AppLayout&gt;</code>,<br>jadi wajib login sebagai admin<br>dan otomatis mendapat sidebar/navbar.</td></tr>
+    <tr><td class="path">/criteria</td><td class="path">pages/Criteria.jsx</td></tr>
+    <tr><td class="path">/ahp</td><td class="path">pages/AHP.jsx</td></tr>
+    <tr><td class="path">/sales</td><td class="path">pages/SalesData.jsx</td></tr>
+    <tr><td class="path">/wp-result</td><td class="path">pages/WPResult.jsx</td></tr>
+    <tr><td class="path">/history</td><td class="path">pages/History.jsx</td></tr>
+    <tr><td class="path">/tutorial</td><td class="path">pages/Tutorial.jsx</td></tr>
+    <tr><td class="path">*</td><td class="path">pages/NotFound.jsx</td><td>Halaman 404 (tanpa layout).</td></tr>
+  </table>
+  <div class="note"><b>Menambah halaman baru?</b> Sentuh 3 file: buat file di <code>src/pages/</code> → daftarkan <code>&lt;Route&gt;</code> di <code>src/App.jsx</code> → tambahkan entri menu di <code>src/components/icons/index.jsx</code> (array <code>navItems</code>).</div>
+</div>
+
+<!-- ================= 3. NAV & LAYOUT ================= -->
+<div class="section newpage">
+  <h2 class="sec"><span class="num">3</span>Navigasi &amp; Layout</h2>
+  <p class="lead">Seluruh kerangka tampilan (sidebar, navbar mobile, drawer, bottom nav) berada dalam <b>satu file</b>: <code>src/components/layout/AppLayout.jsx</code> (269 baris). Daftar menunya sendiri disimpan terpisah di file ikon.</p>
+
+  <table>
+    <tr><th style="width:38mm">Bagian</th><th style="width:34mm">Lokasi</th><th>Fungsi</th></tr>
+    <tr><td><b>navItems</b> (sumber menu)</td><td class="path">components/icons/index.jsx:76</td><td>Array 7 menu: <code>{ to, label, shortLabel, icon }</code>. Dipakai bersama oleh sidebar, drawer, dan bottom nav — <b>edit menu cukup di sini</b>.</td></tr>
+    <tr><td><b>AppIcons + &lt;Icon /&gt;</b></td><td class="path">components/icons/index.jsx:31</td><td>Registry ikon (react-icons hi2/md/lu) dipanggil lewat nama string, plus <code>&lt;RankIcon /&gt;</code> untuk juara 1–3.</td></tr>
+    <tr><td><b>navLinkClass()</b></td><td class="path">layout/AppLayout.jsx:7</td><td>Pusat styling link aktif/non-aktif, mode normal &amp; compact.</td></tr>
+    <tr><td><b>SidebarNav</b></td><td class="path">layout/AppLayout.jsx:23</td><td>Render daftar <code>NavLink</code> dari <code>navItems</code>. Dipakai ulang sidebar &amp; drawer.</td></tr>
+    <tr><td><b>Sidebar</b> (desktop)</td><td class="path">layout/AppLayout.jsx:55</td><td>Sidebar fixed kiri: <code>md:w-18</code> (ikon saja) → <code>lg:w-64</code> (ikon + teks), header logo SIPENS, footer profil + tombol Keluar.</td></tr>
+    <tr><td><b>MobileDrawer</b></td><td class="path">layout/AppLayout.jsx:115</td><td>Drawer geser 280px + overlay blur, mengunci scroll body saat terbuka.</td></tr>
+    <tr><td><b>BottomNav</b></td><td class="path">layout/AppLayout.jsx:186</td><td>Tab bar bawah khusus mobile, <code>grid-cols-7</code>, memakai <code>shortLabel</code> &amp; aman terhadap safe-area iOS.</td></tr>
+    <tr><td><b>MobileHeader</b> (navbar)</td><td class="path">layout/AppLayout.jsx:218</td><td>Header sticky mobile: tombol hamburger + judul halaman aktif (dicocokkan dari <code>navItems</code>).</td></tr>
+    <tr><td><b>AppLayout</b> (shell)</td><td class="path">layout/AppLayout.jsx:247</td><td>Menyatukan semuanya + <code>&lt;Outlet /&gt;</code>. Padding konten: <code>md:pl-18 lg:pl-64</code>, <code>max-w-[1600px]</code>. Drawer auto-tutup tiap ganti rute.</td></tr>
+    <tr><td><b>ProtectedRoute</b></td><td class="path">components/ProtectedRoute.jsx</td><td>Tampilkan spinner saat sesi dimuat; lempar ke <code>/login</code> bila belum login atau bukan admin.</td></tr>
+    <tr><td><b>SipensLogo</b></td><td class="path">components/brand/SipensLogo.jsx</td><td>Logo SVG inline, dipakai lewat <code>&lt;Icon name="logo" /&gt;</code>.</td></tr>
+  </table>
+
+  <div class="note"><b>Breakpoint yang dipakai:</b> <span class="tag">&lt; md</span> header + drawer + bottom nav &nbsp;·&nbsp; <span class="tag">md</span> sidebar ikon-saja (72px) &nbsp;·&nbsp; <span class="tag">lg</span> sidebar penuh 256px.</div>
+</div>
+
+<!-- ================= 4. PAGES ================= -->
+<div class="section newpage">
+  <h2 class="sec"><span class="num">4</span>Halaman (src/pages/)</h2>
+  <p class="lead">Rincian tiap halaman: rute, hook data yang dipakai, komponen pendukung, dan sub-komponen lokal di dalam file itu sendiri.</p>
+
+  <div class="pagecard">
+    <div class="head"><span class="t">Dashboard</span><span class="r">/dashboard &nbsp;·&nbsp; pages/Dashboard.jsx &nbsp;·&nbsp; 331 baris</span></div>
+    <div class="body">
+      <div class="row"><span class="k">Isi</span><span class="v">Ringkasan periode aktif: kartu statistik, Top 3 sales, dan tombol pintas ke menu utama.</span></div>
+      <div class="row"><span class="k">Data</span><span class="v"><span class="tag">useDashboardStats</span><span class="tag">useAuth</span></span></div>
+      <div class="row"><span class="k">Komponen</span><span class="v"><span class="tag">Card</span><span class="tag">Button</span><span class="tag">Alert</span><span class="tag">PageHeader</span><span class="tag">LoadingSpinner</span><span class="tag">Icon / RankIcon</span></span></div>
+      <div class="row"><span class="k">Lokal</span><span class="v"><code>StatCard</code> (:270) &middot; <code>EmptyTopSales</code> (:312)</span></div>
+    </div>
+  </div>
+
+  <div class="pagecard">
+    <div class="head"><span class="t">Kriteria</span><span class="r">/criteria &nbsp;·&nbsp; pages/Criteria.jsx &nbsp;·&nbsp; 407 baris</span></div>
+    <div class="body">
+      <div class="row"><span class="k">Isi</span><span class="v">CRUD kriteria penilaian (nama, kode, tipe benefit/cost) lewat modal form.</span></div>
+      <div class="row"><span class="k">Data</span><span class="v"><span class="tag">useCriteria</span></span></div>
+      <div class="row"><span class="k">Komponen</span><span class="v"><span class="tag">Modal + ModalFooter</span><span class="tag">Input</span><span class="tag">Select</span><span class="tag">Badge</span><span class="tag">Card</span><span class="tag">Alert</span></span></div>
+      <div class="row"><span class="k">Lokal</span><span class="v"><code>validateForm()</code> (:24) — validasi sebelum simpan.</span></div>
+    </div>
+  </div>
+
+  <div class="pagecard">
+    <div class="head"><span class="t">AHP Bobot</span><span class="r">/ahp &nbsp;·&nbsp; pages/AHP.jsx &nbsp;·&nbsp; 310 baris</span></div>
+    <div class="body">
+      <div class="row"><span class="k">Isi</span><span class="v">Matriks perbandingan berpasangan Saaty → hitung bobot, λmax, CI, CR → simpan bobot per periode. Ada step bar alur kerja.</span></div>
+      <div class="row"><span class="k">Data</span><span class="v"><span class="tag">useAHP</span></span></div>
+      <div class="row"><span class="k">Komponen</span><span class="v"><span class="tag">PairwiseMatrix</span><span class="tag">AHPResults</span><span class="tag">SavedWeightsBanner</span><span class="tag">Card</span><span class="tag">Alert</span></span></div>
+      <div class="row"><span class="k">Lokal</span><span class="v"><code>getActiveStep</code> (:21) &middot; <code>StepBar</code> (:29) &middot; <code>CRBadge</code> (:75) &middot; <code>StepBadge</code> (:297)</span></div>
+    </div>
+  </div>
+
+  <div class="pagecard">
+    <div class="head"><span class="t">Data Sales</span><span class="r">/sales &nbsp;·&nbsp; pages/SalesData.jsx &nbsp;·&nbsp; 598 baris (terbesar)</span></div>
+    <div class="body">
+      <div class="row"><span class="k">Isi</span><span class="v">Dua bagian: <b>(a)</b> CRUD data sales + aktif/nonaktif, <b>(b)</b> input nilai tiap sales per kriteria untuk periode terpilih (skala 1–10).</span></div>
+      <div class="row"><span class="k">Data</span><span class="v"><span class="tag">useSales</span><span class="tag">useSalesScores</span></span></div>
+      <div class="row"><span class="k">Komponen</span><span class="v"><span class="tag">SalesScoreGrid</span><span class="tag">Modal</span><span class="tag">Input</span><span class="tag">Badge</span><span class="tag">Card</span><span class="tag">Icon</span></span></div>
+      <div class="row"><span class="k">Lokal</span><span class="v"><code>validateSalesForm</code> (:24) &middot; <code>avatarColor</code>/<code>initials</code> (:38,:42) &middot; <code>SalesCrudSection</code> (:227) &middot; <code>ActionBtn</code> (:482) &middot; <code>ScoresSection</code> (:503)</span></div>
+    </div>
+  </div>
+
+  <div class="pagecard">
+    <div class="head"><span class="t">Hasil WP</span><span class="r">/wp-result &nbsp;·&nbsp; pages/WPResult.jsx &nbsp;·&nbsp; 371 baris</span></div>
+    <div class="body">
+      <div class="row"><span class="k">Isi</span><span class="v">Hitung Weighted Product (S dan V), tampilkan ranking + grafik, lalu simpan hasil ke riwayat. Ada indikator kesiapan data (kriteria, bobot, nilai).</span></div>
+      <div class="row"><span class="k">Data</span><span class="v"><span class="tag">useWPResult</span></span></div>
+      <div class="row"><span class="k">Komponen</span><span class="v"><span class="tag">WPResultChart</span><span class="tag">WPRankingTable</span><span class="tag">Tooltip</span><span class="tag">Card</span><span class="tag">Alert</span></span></div>
+      <div class="row"><span class="k">Lokal</span><span class="v"><code>StatusPill</code> (:336) &middot; <code>SummaryRow</code> (:359)</span></div>
+    </div>
+  </div>
+
+  <div class="pagecard">
+    <div class="head"><span class="t">Riwayat</span><span class="r">/history &nbsp;·&nbsp; pages/History.jsx &nbsp;·&nbsp; 322 baris</span></div>
+    <div class="body">
+      <div class="row"><span class="k">Isi</span><span class="v">Daftar periode yang sudah difinalisasi; klik untuk melihat detail ranking + metadata bobot AHP; bisa dihapus (modal konfirmasi).</span></div>
+      <div class="row"><span class="k">Data</span><span class="v"><span class="tag">useHistory</span></span></div>
+      <div class="row"><span class="k">Komponen</span><span class="v"><span class="tag">WPResultChart</span><span class="tag">WPRankingTable</span><span class="tag">Modal</span><span class="tag">Badge</span><span class="tag">Card</span></span></div>
+      <div class="row"><span class="k">Lokal</span><span class="v"><code>PeriodDetail</code> (:223) &middot; <code>MetaItem</code> (:299) &middot; <code>formatDateTime</code> (:313)</span></div>
+    </div>
+  </div>
+
+  <div class="pagecard">
+    <div class="head"><span class="t">Tutorial</span><span class="r">/tutorial &nbsp;·&nbsp; pages/Tutorial.jsx &nbsp;·&nbsp; 703 baris</span></div>
+    <div class="body">
+      <div class="row"><span class="k">Isi</span><span class="v">Panduan 6 langkah dengan bahasa sederhana (statis, tanpa hook data).</span></div>
+      <div class="row"><span class="k">Lokal</span><span class="v"><code>StepContent</code> (:25) &middot; <code>Step1…Step6</code> (:38, :82, :128, :296, :369, :497) &middot; <code>Callout</code> (:559) &middot; <code>InfoCard</code> (:568) &middot; <code>CriteriaCard</code> (:578)</span></div>
+      <div class="row"><span class="k">Catatan</span><span class="v">Untuk mengubah teks panduan, edit fungsi <code>StepN</code> yang bersangkutan.</span></div>
+    </div>
+  </div>
+
+  <div class="pagecard">
+    <div class="head"><span class="t">Login</span><span class="r">/login &nbsp;·&nbsp; pages/Login.jsx &nbsp;·&nbsp; 226 baris</span></div>
+    <div class="body">
+      <div class="row"><span class="k">Isi</span><span class="v">Form masuk / daftar admin, di luar <code>AppLayout</code> (tanpa sidebar). Redirect balik ke halaman asal setelah berhasil.</span></div>
+      <div class="row"><span class="k">Data</span><span class="v"><span class="tag">useAuth</span> (signIn / signUp)</span></div>
+    </div>
+  </div>
+
+  <div class="pagecard">
+    <div class="head"><span class="t">404</span><span class="r">* &nbsp;·&nbsp; pages/NotFound.jsx &nbsp;·&nbsp; 19 baris</span></div>
+    <div class="body">
+      <div class="row"><span class="k">Isi</span><span class="v">Pesan halaman tidak ditemukan + link kembali ke dashboard.</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ================= 5. COMPONENTS ================= -->
+<div class="section newpage">
+  <h2 class="sec"><span class="num">5</span>Komponen</h2>
+
+  <h3 class="sub">5.1 &nbsp;UI dasar — <span class="mono">src/components/ui/</span></h3>
+  <table>
+    <tr><th style="width:34mm">File</th><th style="width:40mm">Export</th><th>Kegunaan</th><th class="n" style="width:13mm">Baris</th></tr>
+    <tr><td class="path">Button.jsx</td><td><code>Button</code></td><td>Tombol dengan variant (primary/secondary/danger) &amp; size.</td><td class="n">48</td></tr>
+    <tr><td class="path">Card.jsx</td><td><code>Card</code></td><td>Kotak putih rounded + shadow, opsi <code>padding</code>.</td><td class="n">13</td></tr>
+    <tr><td class="path">Input.jsx</td><td><code>Input</code></td><td>Field teks + label + pesan error.</td><td class="n">31</td></tr>
+    <tr><td class="path">Select.jsx</td><td><code>Select</code></td><td>Dropdown berlabel.</td><td class="n">38</td></tr>
+    <tr><td class="path">Modal.jsx</td><td><code>Modal</code>, <code>ModalFooter</code></td><td>Dialog + baris tombol Batal/Simpan. Dipakai Criteria, SalesData, History.</td><td class="n">104</td></tr>
+    <tr><td class="path">Alert.jsx</td><td><code>Alert</code></td><td>Notifikasi error/sukses/info.</td><td class="n">21</td></tr>
+    <tr><td class="path">Badge.jsx</td><td><code>Badge</code></td><td>Label kecil berwarna (mis. benefit/cost).</td><td class="n">19</td></tr>
+    <tr><td class="path">PageHeader.jsx</td><td><code>PageHeader</code></td><td>Judul + deskripsi + slot aksi di setiap halaman.</td><td class="n">19</td></tr>
+    <tr><td class="path">PaginationBar.jsx</td><td><code>PaginationBar</code>, <code>usePagination</code></td><td>Navigasi halaman tabel + hook pemotong data.</td><td class="n">83</td></tr>
+    <tr><td class="path">LoadingSpinner.jsx</td><td><code>LoadingSpinner</code></td><td>Indikator loading 3 ukuran.</td><td class="n">15</td></tr>
+    <tr><td class="path">Tooltip.jsx</td><td><code>Tooltip</code></td><td>Penjelasan hover (dipakai di Hasil WP).</td><td class="n">28</td></tr>
+  </table>
+
+  <h3 class="sub">5.2 &nbsp;Komponen per fitur</h3>
+  <table>
+    <tr><th style="width:52mm">File</th><th>Kegunaan</th><th class="n" style="width:13mm">Baris</th></tr>
+    <tr><td class="path">ahp/PairwiseMatrix.jsx</td><td>Grid matriks perbandingan berpasangan; input skala Saaty 1–9, sel kebalikan terisi otomatis.</td><td class="n">180</td></tr>
+    <tr><td class="path">ahp/AHPResults.jsx</td><td>Tabel normalisasi, bobot prioritas, dan uji konsistensi (λmax, CI, CR). Ikut mengekspor <code>SavedWeightsBanner</code>.</td><td class="n">306</td></tr>
+    <tr><td class="path">sales/SalesScoreGrid.jsx</td><td>Grid input nilai sales × kriteria untuk satu periode.</td><td class="n">157</td></tr>
+    <tr><td class="path">wp/WPRankingTable.jsx</td><td>Tabel ranking akhir (S, V, peringkat) dengan penanda juara.</td><td class="n">133</td></tr>
+    <tr><td class="path">wp/WPResultChart.jsx</td><td>Grafik batang nilai V berbasis Recharts.</td><td class="n">201</td></tr>
+    <tr><td class="path">icons/index.jsx</td><td><code>AppIcons</code>, <code>&lt;Icon&gt;</code>, <code>&lt;RankIcon&gt;</code>, dan <b><code>navItems</code></b> (daftar menu).</td><td class="n">84</td></tr>
+    <tr><td class="path">brand/SipensLogo.jsx</td><td>Logo SVG aplikasi.</td><td class="n">34</td></tr>
+    <tr><td class="path">ProtectedRoute.jsx</td><td>Penjaga rute: wajib login &amp; role admin.</td><td class="n">27</td></tr>
+    <tr><td class="path">ConfigMissing.jsx</td><td>Layar peringatan bila variabel env Supabase belum diisi.</td><td class="n">—</td></tr>
+  </table>
+</div>
+
+<!-- ================= 6. HOOKS ================= -->
+<div class="section newpage">
+  <h2 class="sec"><span class="num">6</span>Hooks Data (src/hooks/)</h2>
+  <p class="lead">Semua akses ke Supabase melewati hook di folder ini — halaman tidak pernah memanggil <code>supabase.from()</code> secara langsung.</p>
+  <table>
+    <tr><th style="width:34mm">Hook</th><th style="width:32mm">Dipakai halaman</th><th style="width:44mm">Tabel Supabase</th><th>Tanggung jawab</th><th class="n" style="width:13mm">Baris</th></tr>
+    <tr><td class="path">useCriteria.js</td><td>Kriteria</td><td><span class="tag">criteria</span></td><td>List, tambah, ubah, hapus kriteria.</td><td class="n">118</td></tr>
+    <tr><td class="path">useAHP.js</td><td>AHP Bobot</td><td><span class="tag">criteria</span><span class="tag">ahp_comparisons</span><span class="tag">ahp_weights</span></td><td>Muat/simpan matriks per periode, jalankan <code>computeAHP</code>, simpan bobot. Ekspor <code>matrixToComparisons()</code>.</td><td class="n">202</td></tr>
+    <tr><td class="path">useSales.js</td><td>Data Sales</td><td><span class="tag">sales</span></td><td>CRUD sales + toggle status aktif.</td><td class="n">115</td></tr>
+    <tr><td class="path">useSalesScores.js</td><td>Data Sales</td><td><span class="tag">sales</span><span class="tag">criteria</span><span class="tag">sales_scores</span></td><td>Muat &amp; simpan nilai sales per kriteria untuk periode terpilih.</td><td class="n">177</td></tr>
+    <tr><td class="path">useWPResult.js</td><td>Hasil WP</td><td><span class="tag">criteria</span><span class="tag">sales</span><span class="tag">sales_scores</span><span class="tag">ahp_weights</span><span class="tag">wp_results</span></td><td>Kumpulkan semua input, panggil <code>computeWPFromRecords</code>, simpan ranking final.</td><td class="n">242</td></tr>
+    <tr><td class="path">useHistory.js</td><td>Riwayat</td><td><span class="tag">wp_results</span><span class="tag">ahp_weights</span></td><td>Daftar periode tersimpan, detail per periode, hapus riwayat.</td><td class="n">160</td></tr>
+    <tr><td class="path">useDashboardStats.js</td><td>Dashboard</td><td><span class="tag">sales</span><span class="tag">criteria</span><span class="tag">wp_results</span></td><td>Hitung angka ringkasan &amp; Top 3 periode terakhir.</td><td class="n">122</td></tr>
+  </table>
+</div>
+
+<!-- ================= 7. UTILS ================= -->
+<div class="section">
+  <h2 class="sec"><span class="num">7</span>Logika Perhitungan (src/utils/)</h2>
+  <p class="lead">Fungsi murni tanpa React &mdash; inti metode SPK. File inilah yang diubah bila rumus perlu disesuaikan.</p>
+
+  <div class="two">
+    <div>
+      <h3 class="sub" style="margin-top:0">utils/ahp.js &nbsp;<span style="font-weight:400;color:#64748b">— 286 baris</span></h3>
+      <table>
+        <tr><th>Export</th><th class="n" style="width:12mm">Baris</th></tr>
+        <tr><td><code>SAATY_SCALE</code> · <code>CR_THRESHOLD</code> (0,1) · <code>RANDOM_INDEX</code></td><td class="n">7–13</td></tr>
+        <tr><td><code>createEmptyMatrix()</code></td><td class="n">36</td></tr>
+        <tr><td><code>isValidSaatyValue()</code></td><td class="n">51</td></tr>
+        <tr><td><code>setPairwiseValue()</code> — isi sel + kebalikannya</td><td class="n">71</td></tr>
+        <tr><td><code>buildMatrixFromComparisons()</code></td><td class="n">98</td></tr>
+        <tr><td><code>normalizeMatrix()</code></td><td class="n">125</td></tr>
+        <tr><td><code>calculatePriorityWeights()</code></td><td class="n">145</td></tr>
+        <tr><td><code>calculateLambdaMax()</code></td><td class="n">161</td></tr>
+        <tr><td><code>calculateCI()</code> · <code>calculateCR()</code></td><td class="n">186·197</td></tr>
+        <tr><td><b><code>computeAHP()</code></b> — pipeline lengkap</td><td class="n">218</td></tr>
+        <tr><td><code>computeAHPFromComparisons()</code></td><td class="n">256</td></tr>
+        <tr><td><code>mapWeightsToCriteria()</code> · <code>formatWeightPercent()</code></td><td class="n">272·284</td></tr>
+      </table>
+    </div>
+    <div>
+      <h3 class="sub" style="margin-top:0">utils/wp.js &nbsp;<span style="font-weight:400;color:#64748b">— 224 baris</span></h3>
+      <table>
+        <tr><th>Export</th><th class="n" style="width:12mm">Baris</th></tr>
+        <tr><td><code>normalizeWeights()</code> — total bobot = 1</td><td class="n">14</td></tr>
+        <tr><td><code>calculateSValue()</code> — pangkat bobot,<br>cost = pangkat negatif</td><td class="n">35</td></tr>
+        <tr><td><code>calculateVValues()</code> — S ÷ ΣS</td><td class="n">71</td></tr>
+        <tr><td><code>assignRanks()</code> — peringkat + seri</td><td class="n">86</td></tr>
+        <tr><td><b><code>computeWP()</code></b> — pipeline lengkap</td><td class="n">126</td></tr>
+        <tr><td><code>computeWPFromRecords()</code> — versi siap-DB</td><td class="n">193</td></tr>
+        <tr><td><code>formatVPercent()</code></td><td class="n">222</td></tr>
+      </table>
+      <div class="note" style="margin-top:3mm"><b>Alur data:</b> Kriteria → AHP (bobot) → Nilai sales → WP (S &amp; V) → Ranking → Riwayat.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ================= 8. AUTH & SUPABASE ================= -->
+<div class="section newpage">
+  <h2 class="sec"><span class="num">8</span>Autentikasi &amp; Koneksi Supabase</h2>
+  <table>
+    <tr><th style="width:44mm">File</th><th>Isi penting</th></tr>
+    <tr><td class="path">src/lib/supabase.js</td><td><code>isSupabaseConfigured</code> (cek env) &middot; <code>supabase</code> client singleton &middot; <code>getCurrentProfile()</code> &middot; <code>isAdmin()</code> &middot; <code>formatPeriod()</code> → <code>YYYY-MM</code> &middot; <code>formatPeriodLabel()</code> → "Juni 2026". Hanya anon key — <b>service_role jangan dipakai di frontend</b>.</td></tr>
+    <tr><td class="path">src/context/AuthContext.jsx</td><td><code>AuthProvider</code> + hook <code>useAuth()</code>. Menyediakan <code>session, user, profile, loading, error, isAuthenticated, isAdmin, signIn, signUp, signOut, refreshProfile</code>. <code>mapAuthError()</code> (:6) menerjemahkan error Supabase ke bahasa Indonesia; <code>validateAdminProfile()</code> (:25) menolak akun non-admin; listener <code>onAuthStateChange</code> (:93) menjaga sesi tetap sinkron.</td></tr>
+    <tr><td class="path">src/components/ProtectedRoute.jsx</td><td>Gerbang rute yang memakai <code>useAuth()</code> di atas.</td></tr>
+  </table>
+
+  <h3 class="sub">Database — <span class="mono">schema.sql</span> (7 tabel + RLS)</h3>
+  <table>
+    <tr><th style="width:38mm">Tabel</th><th style="width:16mm">Baris SQL</th><th>Isi</th></tr>
+    <tr><td class="path">profiles</td><td class="n">19</td><td>Akun + <code>role</code> (admin) — dasar semua policy RLS.</td></tr>
+    <tr><td class="path">criteria</td><td class="n">34</td><td>Kriteria penilaian, tipe benefit/cost.</td></tr>
+    <tr><td class="path">ahp_comparisons</td><td class="n">52</td><td>Nilai perbandingan berpasangan per periode.</td></tr>
+    <tr><td class="path">ahp_weights</td><td class="n">69</td><td>Bobot hasil AHP + CR per periode.</td></tr>
+    <tr><td class="path">sales</td><td class="n">88</td><td>Data sales (nama, kode, status aktif).</td></tr>
+    <tr><td class="path">sales_scores</td><td class="n">104</td><td>Nilai tiap sales per kriteria per periode (skala 1–10).</td></tr>
+    <tr><td class="path">wp_results</td><td class="n">121</td><td>Hasil akhir WP: nilai S, V, dan peringkat.</td></tr>
+  </table>
+</div>
+
+<!-- ================= 9. CONFIG ================= -->
+<div class="section">
+  <h2 class="sec"><span class="num">9</span>Konfigurasi, SQL &amp; Script</h2>
+  <div class="two">
+    <div>
+      <table>
+        <tr><th>File konfigurasi</th><th>Fungsi</th></tr>
+        <tr><td class="path">vite.config.js</td><td>Plugin React + Tailwind v4.</td></tr>
+        <tr><td class="path">vercel.json</td><td>Rewrite semua path ke <code>index.html</code> (SPA).</td></tr>
+        <tr><td class="path">eslint.config.js</td><td>Aturan lint React hooks &amp; refresh.</td></tr>
+        <tr><td class="path">.env</td><td><code>VITE_SUPABASE_URL</code>, <code>VITE_SUPABASE_ANON_KEY</code>.</td></tr>
+        <tr><td class="path">.env.example</td><td>Template env (+ service role untuk script saja).</td></tr>
+        <tr><td class="path">package.json</td><td>Script: <code>dev</code>, <code>build</code>, <code>preview</code>, <code>lint</code>.</td></tr>
+        <tr><td class="path">README.md</td><td>Ringkasan stack &amp; cara setup lokal.</td></tr>
+      </table>
+    </div>
+    <div>
+      <table>
+        <tr><th>SQL &amp; script</th><th>Fungsi</th></tr>
+        <tr><td class="path">schema.sql</td><td>Skema utama + RLS (jalankan pertama).</td></tr>
+        <tr><td class="path">fix-rls-recursion.sql</td><td>Perbaikan policy rekursif.</td></tr>
+        <tr><td class="path">seed-demo.sql</td><td>Data contoh minimal.</td></tr>
+        <tr><td class="path">seed-10-sales.sql</td><td>Seed aktif: 10 sales, Jan–Jun 2026.</td></tr>
+        <tr><td class="path">seed-30 / 100-sales.sql</td><td>Dataset lebih besar untuk uji performa.</td></tr>
+        <tr><td class="path">scripts/create-admin.js</td><td>Buat akun admin via service role key.</td></tr>
+        <tr><td class="path">scripts/generate-seed-*.js</td><td>Generator file seed di atas.</td></tr>
+        <tr><td class="path">scripts/verify-algorithms.js</td><td>Verifikasi hasil AHP &amp; WP terhadap perhitungan manual.</td></tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ================= 10. CHEAT SHEET ================= -->
+<div class="section">
+  <h2 class="sec"><span class="num">10</span>Contekan: Mau Ubah Apa, Buka File Mana</h2>
+  <table>
+    <tr><th style="width:66mm">Kalau ingin…</th><th>Buka file</th></tr>
+    <tr><td>Menambah / mengganti / mengurutkan menu</td><td class="path">src/components/icons/index.jsx → navItems (:76)</td></tr>
+    <tr><td>Mengubah tampilan sidebar / navbar / bottom nav</td><td class="path">src/components/layout/AppLayout.jsx</td></tr>
+    <tr><td>Menambah halaman baru</td><td class="path">src/pages/ + src/App.jsx + icons/index.jsx</td></tr>
+    <tr><td>Mengubah warna tema aplikasi</td><td class="path">src/index.css → blok @theme</td></tr>
+    <tr><td>Mengganti ikon menu</td><td class="path">src/components/icons/index.jsx → AppIcons (:31)</td></tr>
+    <tr><td>Mengubah aturan siapa yang boleh masuk</td><td class="path">src/components/ProtectedRoute.jsx + context/AuthContext.jsx</td></tr>
+    <tr><td>Mengubah pesan error login</td><td class="path">src/context/AuthContext.jsx → mapAuthError (:6)</td></tr>
+    <tr><td>Mengubah rumus / ambang CR AHP</td><td class="path">src/utils/ahp.js</td></tr>
+    <tr><td>Mengubah rumus Weighted Product</td><td class="path">src/utils/wp.js</td></tr>
+    <tr><td>Mengubah query atau tabel yang diambil</td><td class="path">src/hooks/*.js</td></tr>
+    <tr><td>Mengubah teks panduan pengguna</td><td class="path">src/pages/Tutorial.jsx → Step1…Step6</td></tr>
+    <tr><td>Mengubah bentuk tombol / kartu / modal global</td><td class="path">src/components/ui/</td></tr>
+    <tr><td>Mengubah format tampilan periode</td><td class="path">src/lib/supabase.js → formatPeriodLabel (:81)</td></tr>
+    <tr><td>Menambah kolom / tabel database</td><td class="path">schema.sql (lalu sesuaikan hook terkait)</td></tr>
+  </table>
+  <div class="note amber"><b>Aturan main arsitektur:</b> halaman hanya mengurus tampilan &amp; interaksi → hook mengurus data Supabase → utils mengurus rumus. Menjaga pemisahan ini membuat perubahan rumus atau query tidak merembet ke UI.</div>
+</div>
+
+</body>
+</html>

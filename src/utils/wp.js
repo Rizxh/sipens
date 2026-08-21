@@ -222,3 +222,65 @@ export function computeWPFromRecords(sales, criteria, salesScores, ahpWeights) {
 export function formatVPercent(vValue, decimals = 2) {
   return `${(vValue * 100).toFixed(decimals)}%`;
 }
+
+/**
+ * Hitung rata-rata (mean) dan standar deviasi populasi dari sekumpulan nilai V.
+ * @param {number[]} vValues
+ * @returns {{ mean: number, stdDev: number }}
+ */
+export function calculateVStats(vValues) {
+  if (!vValues?.length) return { mean: 0, stdDev: 0 };
+
+  const mean = vValues.reduce((acc, v) => acc + v, 0) / vValues.length;
+  const variance =
+    vValues.reduce((acc, v) => acc + (v - mean) ** 2, 0) / vValues.length;
+
+  return { mean, stdDev: Math.sqrt(variance) };
+}
+
+/** Kategori catatan performa berdasarkan posisi nilai V terhadap rata-rata */
+export const PERFORMANCE_CATEGORY = {
+  KURANG_BAIK: 'kurang_baik',
+  BAIK: 'baik',
+  SANGAT_BAIK: 'sangat_baik',
+};
+
+/**
+ * Klasifikasikan performa satu sales berdasarkan nilai V dibanding rata-rata
+ * dan standar deviasi seluruh peserta pada periode yang sama.
+ *
+ * Aturan:
+ *  - V < rata-rata                     → "Kurang Baik"
+ *  - rata-rata ≤ V < rata-rata+stdDev   → "Baik"
+ *  - V ≥ rata-rata + standar deviasi    → "Sangat Baik"
+ *
+ * @param {number} vValue
+ * @param {{ mean: number, stdDev: number }} stats - hasil calculateVStats()
+ * @returns {'kurang_baik'|'baik'|'sangat_baik'}
+ */
+export function classifyPerformance(vValue, stats) {
+  const { mean, stdDev } = stats;
+
+  if (vValue < mean) return PERFORMANCE_CATEGORY.KURANG_BAIK;
+  if (stdDev > 0 && vValue >= mean + stdDev) return PERFORMANCE_CATEGORY.SANGAT_BAIK;
+  return PERFORMANCE_CATEGORY.BAIK;
+}
+
+/** Metadata tampilan (label id, warna badge) untuk tiap kategori performa */
+export const PERFORMANCE_META = {
+  [PERFORMANCE_CATEGORY.KURANG_BAIK]: { label: 'Kurang Baik', badgeVariant: 'poor' },
+  [PERFORMANCE_CATEGORY.BAIK]: { label: 'Baik', badgeVariant: 'good' },
+  [PERFORMANCE_CATEGORY.SANGAT_BAIK]: { label: 'Sangat Baik', badgeVariant: 'excellent' },
+};
+
+/**
+ * Beri label catatan performa siap-pakai untuk satu nilai V terhadap kumpulan nilai V.
+ * @param {number} vValue
+ * @param {number[]} allVValues - seluruh nilai V pada periode yang sama
+ * @returns {{ category: string, label: string, badgeVariant: string }}
+ */
+export function getPerformanceNote(vValue, allVValues) {
+  const stats = calculateVStats(allVValues);
+  const category = classifyPerformance(vValue, stats);
+  return { category, ...PERFORMANCE_META[category] };
+}

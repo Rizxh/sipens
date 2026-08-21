@@ -123,7 +123,7 @@ export default function Login() {
             </div>
             <div className="min-w-0">
               <h1 className="text-lg font-bold text-slate-900 tracking-tight leading-tight">
-                SIPENS
+                SIPENS  
               </h1>
               <p className="text-slate-500 text-sm leading-snug truncate">
                 Penilaian & Nominasi Sales Terbaik
