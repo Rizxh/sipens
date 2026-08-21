@@ -204,8 +204,6 @@ function addRankingTable(doc, startY, results) {
  * @param {string} params.periodLabel - Label periode (contoh: "Juni 2026")
  * @param {string} params.period - Periode mentah (contoh: "2026-06")
  * @param {{ id: string, name: string, employeeId: string, sValue: number, vValue: number, rank: number, isBest?: boolean }[]} params.results
- * @param {{ name: string, type: 'benefit'|'cost' }[]} [params.criteria]
- * @param {number[]} [params.normalizedWeights]
  * @param {{ lambda_max: number, ci: number, cr: number, is_consistent: boolean }|null} [params.ahpMeta]
  * @param {string} [params.savedAt] - ISO timestamp, jika data berasal dari riwayat tersimpan
  * @param {'wp-result'|'history'} [params.source]
@@ -214,8 +212,6 @@ export function exportWPResultPDF({
   periodLabel,
   period,
   results,
-  criteria,
-  normalizedWeights,
   ahpMeta,
   savedAt,
   source = 'wp-result',
@@ -261,25 +257,6 @@ export function exportWPResultPDF({
     y = Math.max(leftFinalY, rightFinalY) + 8;
   } else {
     y = infoTable(doc, y, MARGIN, CONTENT_WIDTH, summaryRows) + 8;
-  }
-
-  if (criteria?.length && normalizedWeights?.length) {
-    y = sectionTitle(doc, y, 'Bobot Kriteria');
-    autoTable(doc, {
-      startY: y,
-      head: [['Kriteria', 'Tipe', 'Bobot']],
-      body: criteria.map((c, i) => [
-        c.name ?? `Kriteria ${i + 1}`,
-        c.type === 'cost' ? 'Cost' : 'Benefit',
-        Number(normalizedWeights[i]).toFixed(4),
-      ]),
-      theme: 'grid',
-      headStyles: { fillColor: NAVY, textColor: 255, fontStyle: 'bold', fontSize: 9 },
-      styles: { fontSize: 9, cellPadding: 2.4, lineColor: NAVY_LIGHT, textColor: TEXT_DARK },
-      columnStyles: { 2: { halign: 'right' } },
-      margin: { left: MARGIN, right: MARGIN },
-    });
-    y = doc.lastAutoTable.finalY + 8;
   }
 
   y = sectionTitle(doc, y, 'Tabel Ranking Lengkap', 40);
