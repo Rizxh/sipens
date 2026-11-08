@@ -2,7 +2,7 @@
 -- SIPENS — Seed 10 Sales, 3 Kriteria
 -- Kriteria: Target Omset (benefit), Pelanggan Baru (benefit), Efektivitas Biaya (cost)
 -- Periode : Jan–Jun 2026 | Juara berbeda tiap bulan
--- Juara   : Jan=Budi, Feb=Siti, Mar=Rina, Apr=Rudi, Mei=Andi, Jun=Maya
+-- Juara   : Jan=Anindya, Feb=Nadhira, Mar=Callista, Apr=Salsabila, Mei=Raka, Jun=Shafira
 -- =============================================================================
 
 -- Hapus semua data lama (2025 dan 2026, termasuk 90 sales extra jika ada)
@@ -67,16 +67,16 @@ ON CONFLICT (name) DO UPDATE SET is_active = TRUE, type = EXCLUDED.type, descrip
 
 -- 10 Sales Karyawan
 INSERT INTO public.sales (name, employee_id) VALUES
-  ('Budi Santoso', 'EMP001'),
-  ('Siti Rahayu', 'EMP002'),
-  ('Andi Wijaya', 'EMP003'),
-  ('Dewi Kusuma', 'EMP004'),
-  ('Rudi Hartono', 'EMP005'),
-  ('Maya Putri', 'EMP006'),
-  ('Agus Setiawan', 'EMP007'),
-  ('Rina Wati', 'EMP008'),
-  ('Hendra Gunawan', 'EMP009'),
-  ('Lina Sari', 'EMP010');
+  ('Anindya Kirana Putri', 'EMP001'),
+  ('Nadhira Ayu Lestari', 'EMP002'),
+  ('Raka Aditya Pratama', 'EMP003'),
+  ('Keisha Aurelia Wijaya', 'EMP004'),
+  ('Salsabila Rahmadani', 'EMP005'),
+  ('Shafira Maharani', 'EMP006'),
+  ('Dimas Arya Putra', 'EMP007'),
+  ('Callista Febriani', 'EMP008'),
+  ('Zahra Amalia Siregar', 'EMP009'),
+  ('Kayla Anggraeni', 'EMP010');
 
 -- AHP Bobot: 2026-01
 INSERT INTO public.ahp_comparisons (period, criteria_a_id, criteria_b_id, value)
@@ -199,7 +199,7 @@ FROM (VALUES
 JOIN public.criteria c ON c.name = w.name AND c.is_active = TRUE;
 
 -- ─────────────────────────────────────────────────────────────────
--- Nilai Sales: 2026-01  |  Juara: Budi Santoso (EMP001)
+-- Nilai Sales: 2026-01  |  Juara: Anindya Kirana Putri (EMP001)
 -- Skala penilaian: 1–10  |  TO=benefit, PB=benefit, EB=cost
 -- S = TO^0.633 × PB^0.261 × EB^(-0.106)
 -- ─────────────────────────────────────────────────────────────────
@@ -257,7 +257,7 @@ FROM (VALUES
 JOIN public.sales s ON s.employee_id = r.employee_id;
 
 -- ─────────────────────────────────────────────────────────────────
--- Nilai Sales: 2026-02  |  Juara: Siti Rahayu (EMP002)
+-- Nilai Sales: 2026-02  |  Juara: Nadhira Ayu Lestari (EMP002)
 -- ─────────────────────────────────────────────────────────────────
 INSERT INTO public.sales_scores (sales_id, criteria_id, period, value)
 SELECT s.id, c.id, '2026-02', v.score
@@ -313,7 +313,7 @@ FROM (VALUES
 JOIN public.sales s ON s.employee_id = r.employee_id;
 
 -- ─────────────────────────────────────────────────────────────────
--- Nilai Sales: 2026-03  |  Juara: Rina Wati (EMP008)
+-- Nilai Sales: 2026-03  |  Juara: Callista Febriani (EMP008)
 -- ─────────────────────────────────────────────────────────────────
 INSERT INTO public.sales_scores (sales_id, criteria_id, period, value)
 SELECT s.id, c.id, '2026-03', v.score
@@ -369,7 +369,7 @@ FROM (VALUES
 JOIN public.sales s ON s.employee_id = r.employee_id;
 
 -- ─────────────────────────────────────────────────────────────────
--- Nilai Sales: 2026-04  |  Juara: Rudi Hartono (EMP005)
+-- Nilai Sales: 2026-04  |  Juara: Salsabila Rahmadani (EMP005)
 -- ─────────────────────────────────────────────────────────────────
 INSERT INTO public.sales_scores (sales_id, criteria_id, period, value)
 SELECT s.id, c.id, '2026-04', v.score
@@ -425,7 +425,7 @@ FROM (VALUES
 JOIN public.sales s ON s.employee_id = r.employee_id;
 
 -- ─────────────────────────────────────────────────────────────────
--- Nilai Sales: 2026-05  |  Juara: Andi Wijaya (EMP003)
+-- Nilai Sales: 2026-05  |  Juara: Raka Aditya Pratama (EMP003)
 -- ─────────────────────────────────────────────────────────────────
 INSERT INTO public.sales_scores (sales_id, criteria_id, period, value)
 SELECT s.id, c.id, '2026-05', v.score
@@ -481,7 +481,7 @@ FROM (VALUES
 JOIN public.sales s ON s.employee_id = r.employee_id;
 
 -- ─────────────────────────────────────────────────────────────────
--- Nilai Sales: 2026-06  |  Juara: Maya Putri (EMP006)
+-- Nilai Sales: 2026-06  |  Juara: Shafira Maharani (EMP006)
 -- ─────────────────────────────────────────────────────────────────
 INSERT INTO public.sales_scores (sales_id, criteria_id, period, value)
 SELECT s.id, c.id, '2026-06', v.score
@@ -540,6 +540,6 @@ JOIN public.sales s ON s.employee_id = r.employee_id;
 -- Selesai! Jalankan di Supabase SQL Editor.
 -- Nilai: skala 1–10 | S = TO^0.633 × PB^0.261 × EB^(-0.106)
 -- Hasil: 10 sales, 6 bulan (Jan–Jun 2026), juara berbeda tiap bulan:
---   Jan=Budi Santoso   Feb=Siti Rahayu  Mar=Rina Wati
---   Apr=Rudi Hartono   Mei=Andi Wijaya  Jun=Maya Putri
+--   Jan=Anindya Kirana Putri   Feb=Nadhira Ayu Lestari  Mar=Callista Febriani
+--   Apr=Salsabila Rahmadani   Mei=Raka Aditya Pratama  Jun=Shafira Maharani
 -- =============================================================================
