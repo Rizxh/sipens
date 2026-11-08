@@ -13,6 +13,7 @@ import { Icon } from '../components/icons';
 import { useSales } from '../hooks/useSales';
 import { useSalesScores } from '../hooks/useSalesScores';
 import { formatPeriodLabel } from '../lib/supabase';
+import { downloadSalesSql } from '../utils/sqlExport';
 
 const TABS = [
   { id: 'sales', label: 'Daftar Sales', icon: 'users' },
@@ -183,7 +184,7 @@ export default function SalesData() {
       >
         {formError && <Alert variant="error" className="mb-4">{formError}</Alert>}
         <div className="space-y-4">
-          <Input label="Nama Sales" name="name" placeholder="Contoh: Budi Santoso"
+          <Input label="Nama Sales" name="name" placeholder="Contoh: Anindya Kirana Putri"
             value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })}
             error={fieldErrors.name} disabled={salesSaving} />
           <Input label="ID Karyawan" name="employee_id" placeholder="Contoh: EMP001"
@@ -226,6 +227,20 @@ export default function SalesData() {
 
 function SalesCrudSection({ allSales, activeCount, loading, error, onRefresh, onAdd, onEdit, onDelete, onToggle }) {
   const [search, setSearch] = useState('');
+  const [exporting, setExporting] = useState(false);
+  const [exportError, setExportError] = useState('');
+
+  async function handleExportSql() {
+    setExporting(true);
+    setExportError('');
+    try {
+      await downloadSalesSql();
+    } catch (err) {
+      setExportError(`Gagal export SQL: ${err.message}`);
+    } finally {
+      setExporting(false);
+    }
+  }
 
   const filtered = useMemo(() => {
     if (!search.trim()) return allSales;
@@ -299,12 +314,17 @@ function SalesCrudSection({ allSales, activeCount, loading, error, onRefresh, on
           <Icon name="search" className="w-4 h-4 mr-1.5" />
           Refresh
         </Button>
+        <Button variant="secondary" size="sm" onClick={handleExportSql} loading={exporting}
+          disabled={allSales.length === 0} className="shrink-0">
+          {!exporting && <Icon name="download" className="w-4 h-4" />}
+          Download SQL
+        </Button>
         <Button onClick={onAdd} className="shrink-0">
           + Tambah Sales
         </Button>
       </div>
 
-      {error && <Alert variant="error">{error}</Alert>}
+      {(error || exportError) && <Alert variant="error">{error || exportError}</Alert>}
       {search && filtered.length === 0 && (
         <Alert variant="info">Tidak ada sales yang cocok dengan pencarian "{search}".</Alert>
       )}

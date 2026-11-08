@@ -7,26 +7,34 @@ import { resolve } from 'path';
 import { computeWP } from '../src/utils/wp.js';
 
 const PERIODS = ['2025-01', '2025-02', '2025-03', '2025-04', '2025-05', '2025-06'];
-const SALES_COUNT = 100;
 
-const FIRST_NAMES = [
-  'Budi', 'Siti', 'Andi', 'Dewi', 'Rizky', 'Maya', 'Agus', 'Rina', 'Hendra', 'Fitri',
-  'Bambang', 'Lestari', 'Eko', 'Putri', 'Joko', 'Ani', 'Doni', 'Sari', 'Yoga', 'Nina',
-  'Fajar', 'Wulan', 'Rudi', 'Citra', 'Bayu', 'Dian', 'Galih', 'Ayu', 'Dimas', 'Melati',
-  'Arif', 'Kartika', 'Hadi', 'Indah', 'Reza', 'Vina', 'Tono', 'Lia', 'Iwan', 'Dina',
-  'Gilang', 'Ratna', 'Yudi', 'Mira', 'Arief', 'Sinta', 'Dedi', 'Rani', 'Fauzi', 'Nadia',
-  'Herman', 'Yuni', 'Slamet', 'Tika', 'Wahyu', 'Dewa', 'Oki', 'Farah', 'Rama', 'Gita',
-  'Adi', 'Nisa', 'Bima', 'Kiki', 'Candra', 'Lina', 'Darma', 'Putra', 'Eka', 'Susi',
-  'Fadli', 'Wati', 'Gunawan', 'Rosa', 'Hafiz', 'Mega', 'Jaya', 'Novi', 'Kurnia', 'Alya',
-  'Panji', 'Dinda', 'Rafli', 'Sela', 'Taufik', 'Zahra', 'Yasin', 'Mila', 'Kevin', 'Olivia',
-  'Nanda', 'Sabrina', 'Ilham', 'Clara', 'Satria', 'Amelia', 'Bagas', 'Jessica', 'Danu', 'Felicia',
-];
-
-const LAST_NAMES = [
-  'Santoso', 'Rahayu', 'Wijaya', 'Lestari', 'Pratama', 'Sari', 'Hidayat', 'Kusuma',
-  'Saputra', 'Anggraini', 'Nugroho', 'Permata', 'Setiawan', 'Maharani', 'Susanto',
-  'Wibowo', 'Halim', 'Utami', 'Purnama', 'Gunawan', 'Siregar', 'Nasution', 'Simanjuntak',
-  'Hutapea', 'Sitorus', 'Pangestu', 'Cahyono', 'Handayani', 'Maulana', 'Firmansyah',
+/** 100 nama sales (75 perempuan, 25 laki-laki), unik, urut sesuai EMP001–EMP100 */
+const SALES_NAMES = [
+  'Anindya Kirana Putri', 'Nadhira Ayu Lestari', 'Salsabila Rahmadani', 'Raka Aditya Pratama',
+  'Keisha Aurelia Wijaya', 'Alya Nur Azizah', 'Shafira Maharani', 'Dimas Arya Putra',
+  'Kayla Anggraeni', 'Zahra Amalia Siregar', 'Callista Febriani', 'Rizky Febriansyah',
+  'Nayla Puspitasari', 'Aurelia Kusumawardani', 'Raissa Dwi Anjani', 'Arya Mahendra',
+  'Tiara Ananda Permata', 'Clarissa Wulandari', 'Felicia Hartanto', 'Bima Satria Nugraha',
+  'Arinda Larasati', 'Dinda Kartika Sari', 'Amanda Rizkia', 'Fadli Ramadhan',
+  'Kinanti Prameswari', 'Syifa Khairunnisa', 'Prisilia Tanjung', 'Gilang Dirga Permana',
+  'Vania Oktaviani', 'Gabriella Natasha Lubis', 'Kezia Margaretha', 'Hafiz Alfarizi',
+  'Annisa Rahmawati', 'Citra Ayu Melati', 'Valencia Hartono', 'Iqbal Ramadhani',
+  'Adinda Safitri', 'Jihan Nabila Harahap', 'Laras Sekar Arum', 'Jefri Hutapea',
+  'Melinda Gunawan', 'Nabila Putri Utami', 'Olivia Rachmawati', 'Kevin Wibowo',
+  'Puspa Ayu Ningrum', 'Amara Zivanna', 'Rania Azzahra', 'Naufal Ardiansyah',
+  'Sekar Ayu Pertiwi', 'Tasya Nur Aini', 'Ully Fadhilah', 'Reza Syahputra',
+  'Vira Andriani', 'Widya Paramitha', 'Yasmin Aulia Rahma', 'Bagas Prakoso',
+  'Zalfa Humaira', 'Aisyah Nurul Fitri', 'Bella Anastasya', 'Dafa Pradipta',
+  'Cinta Kirana Dewi', 'Dewanti Rahayu', 'Elvina Hapsari', 'Fajar Nugroho',
+  'Fanny Kusumadewi', 'Gita Ayuningtyas', 'Hana Pertiwi', 'Galih Wicaksono',
+  'Indira Kalista', 'Jessica Tanoto', 'Kirana Larasati', 'Ilham Maulana',
+  'Luna Ayudia Putri', 'Michelle Wijayakusuma', 'Nadya Arista', 'Yudha Pangestu',
+  'Ochi Rosdiana', 'Pevita Cahyaningrum', 'Rachel Amelinda', 'Aldi Firmansyah',
+  'Sherin Andini', 'Talita Zahra', 'Ayu Dewanti Sari', 'Teuku Rayyan',
+  'Bianca Lizardi', 'Carissa Putri Ananta', 'Dara Aprilia', 'Vino Halim',
+  'Erika Natalia Sinaga', 'Fitria Handayani', 'Gracia Indriani', 'Rendy Kurniawan',
+  'Hanifa Salsabila', 'Intan Permatasari', 'Jasmine Kartika', 'Satya Wirawan',
+  'Karina Novilda', 'Lidya Pratiwi', 'Mikha Anastasia Siahaan', 'Arief Hidayat',
 ];
 
 const CRITERIA = [
@@ -42,7 +50,7 @@ const WEIGHTS = [0.352, 0.248, 0.198, 0.122, 0.08];
 const CRITERIA_NAMES = CRITERIA.map((c) => c.name);
 
 /** Indeks sales (0-based) — juara unik tiap bulan (EMP = index + 1) */
-const MONTH_CHAMPIONS = [11, 27, 44, 66, 82, 99];
+const MONTH_CHAMPIONS = [10, 24, 44, 66, 82, 97];
 
 function seededRandom(seed) {
   let s = seed;
@@ -62,19 +70,8 @@ function clampCost(v) {
 
 function generateSalesProfiles() {
   const rand = seededRandom(100);
-  const usedNames = new Set();
 
-  return Array.from({ length: SALES_COUNT }, (_, i) => {
-    let name;
-    let attempts = 0;
-    do {
-      const first = FIRST_NAMES[(i + attempts) % FIRST_NAMES.length];
-      const last = LAST_NAMES[(i * 3 + attempts) % LAST_NAMES.length];
-      name = `${first} ${last}`;
-      attempts += 1;
-    } while (usedNames.has(name) && attempts < 50);
-    usedNames.add(name);
-
+  return SALES_NAMES.map((name, i) => {
     const employeeId = `EMP${String(i + 1).padStart(3, '0')}`;
     const base = 58 + rand() * 32;
 
